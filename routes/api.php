@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GridController;
 use App\Http\Controllers\PoloController;
@@ -51,6 +52,7 @@ Route::resource('teams', TeamController::class);
 Route::get('/teams/{team}/list-grid/', [TeamController::class, 'listGrid']);
 Route::post('/teams/{cpf}/store-history-pdf/', [TeamController::class, 'storeHistoryPDF']);
 
+/** @todo lançar no controller History */
 Route::get('/storage/app/history/{filename}',function($filename){
     $path = storage_path('/app/history/' . $filename);
     if (file_exists($path)) {
@@ -58,6 +60,20 @@ Route::get('/storage/app/history/{filename}',function($filename){
     } else {
         return response()->json(['error'=>true, 'message'=> 'Failed to create pdf '], 500);
     }
+});
+
+/** @todo lançar no controller History */
+Route::get('/historys/{filename}/remove', function($filename){
+
+    $fileToDelete = "/history/". $filename;
+
+    if (Storage::exists($fileToDelete)):
+        Storage::delete($fileToDelete);
+        return response()->json(['data'=> $fileToDelete, 'message' => 'File removed successfully!'], 200);
+    else:
+        return response()->json(['error'=>true, 'message'=> 'Failed to remove file'], 500);
+    endif;
+
 });
 
 /** Etapas */
