@@ -49,6 +49,16 @@ Route::resource('grid-templates', GridTemplateController::class);
 /** Turmas */
 Route::resource('teams', TeamController::class);
 Route::get('/teams/{team}/list-grid/', [TeamController::class, 'listGrid']);
+Route::post('/teams/{cpf}/store-history-pdf/', [TeamController::class, 'storeHistoryPDF']);
+
+Route::get('/storage/app/history/{filename}',function($filename){
+    $path = storage_path('/app/history/' . $filename);
+    if (file_exists($path)) {
+        return response()->file($path, ['Content-Type' => 'application/pdf']);
+    } else {
+        return response()->json(['error'=>true, 'message'=> 'Failed to create pdf '], 500);
+    }
+});
 
 /** Etapas */
 Route::resource('stages', StageController::class);

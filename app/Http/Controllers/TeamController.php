@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\TeamRequest;
 use DB;
 use App\Models\Team;
 use Illuminate\Http\Request;
+use App\Http\Requests\TeamRequest;
+use Illuminate\Support\Facades\Storage;
 
 class TeamController extends Controller
 {
@@ -52,6 +53,24 @@ class TeamController extends Controller
 
         } catch (\Exception $e) {
             return response()->json(['error'=>true,'message'=>$e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Store a History at Student in storage.
+     * @param Request $request
+     * @param string $cpf
+     * @return void
+     */
+    public function storeHistoryPDF(Request $request, string $cpf)
+    {
+        $file = $request->file('pdf');
+        $filePath = Storage::putFileAs('history', $file, "{$cpf}_historico.pdf");
+
+        if(Storage::exists($filePath)){
+            return response()->json(['data'=> $filePath, 'message' => 'Record successfully created!'], 201);
+        } else {
+            return response()->json(['error'=>true, 'message'=> 'Failed to create pdf '], 500);
         }
     }
 
