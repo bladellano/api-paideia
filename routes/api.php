@@ -1,8 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GridController;
 use App\Http\Controllers\PoloController;
@@ -14,6 +12,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeachingController;
 use App\Http\Controllers\DisciplineController;
 use App\Http\Controllers\GridTemplateController;
+use App\Http\Controllers\HistoryController;
 
 /** Auth */
 Route::post('auth/login', [AuthController::class,'login']);
@@ -42,39 +41,21 @@ Route::resource('disciplines', DisciplineController::class);
 
 /** Grades */
 Route::resource('grids', GridController::class);
-Route::post('/history', [GridController::class, 'history']);
+Route::get('/grids/{team}/list-grid/', [GridController::class, 'listGrid']);
+Route::get('/grids/{grid}/get-grid-template/', [GridController::class, 'getGridTemplate']);
+Route::get('/grids/{grid}/remove-template-from-grid/', [GridController::class, 'removeTemplatesFromGrid']);
 
 /** Grades Templates */
 Route::resource('grid-templates', GridTemplateController::class);
 
 /** Turmas */
 Route::resource('teams', TeamController::class);
-Route::get('/teams/{team}/list-grid/', [TeamController::class, 'listGrid']);
-Route::post('/teams/{cpf}/store-history-pdf/', [TeamController::class, 'storeHistoryPDF']);
 
-/** @todo lançar no controller History */
-Route::get('/storage/app/history/{filename}',function($filename){
-    $path = storage_path('/app/history/' . $filename);
-    if (file_exists($path)) {
-        return response()->file($path, ['Content-Type' => 'application/pdf']);
-    } else {
-        return response()->json(['error'=>true, 'message'=> 'Failed to create pdf '], 500);
-    }
-});
-
-/** @todo lançar no controller History */
-Route::get('/historys/{filename}/remove', function($filename){
-
-    $fileToDelete = "/history/". $filename;
-
-    if (Storage::exists($fileToDelete)):
-        Storage::delete($fileToDelete);
-        return response()->json(['data'=> $fileToDelete, 'message' => 'File removed successfully!'], 200);
-    else:
-        return response()->json(['error'=>true, 'message'=> 'Failed to remove file'], 500);
-    endif;
-
-});
+/** Históricos */
+Route::post('/history', [GridController::class, 'history']);
+Route::post('/historys/{cpf}/store-history-pdf/', [HistoryController::class, 'storeHistoryPDF']);
+Route::get('/historys/storage/{filename}', [HistoryController::class, 'verifyBlobHistoryPDF']);
+Route::get('/historys/{filename}/remove', [HistoryController::class, 'removeFileHistoryPDF']);
 
 /** Etapas */
 Route::resource('stages', StageController::class);

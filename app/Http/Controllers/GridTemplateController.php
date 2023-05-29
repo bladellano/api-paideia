@@ -39,13 +39,21 @@ class GridTemplateController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //
+        try {
+            foreach($request->all() as $rowTemplate):
+                GridTemplate::create($rowTemplate);
+            endforeach;
+
+            return response()->json(['data'=> $request->all(), 'message' => 'Record successfully created!'], 201);
+
+        } catch (\Exception $e) {
+            return response()->json(['error'=>true,'message'=>$e->getMessage()], 500);
+        }
     }
 
     /**
