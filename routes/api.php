@@ -42,7 +42,8 @@ Route::resource('disciplines', DisciplineController::class);
 /** Grades */
 Route::resource('grids', GridController::class);
 Route::get('/grids/{team}/list-grid/', [GridController::class, 'listGrid']);
-Route::get('/grids/{grid}/get-grid-template/', [GridController::class, 'getGridTemplate']);
+// Route::get('/grids/{grid}/get-grid-template/', [GridController::class, 'getGridTemplate']);
+Route::get('/grids/get-grid-template/{grid}', [GridController::class, 'getGridTemplate']);
 Route::get('/grids/{grid}/remove-template-from-grid/', [GridController::class, 'removeTemplatesFromGrid']);
 
 /** Grades Templates */
