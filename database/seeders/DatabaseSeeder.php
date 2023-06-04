@@ -116,7 +116,7 @@ class DatabaseSeeder extends Seeder
 
         // Usuário
         \App\Models\User::factory()->create([
-            'name' => 'Test User',
+            'name' => 'William Borralho',
             'email' => 'test@example.com',
         ]);
     }
