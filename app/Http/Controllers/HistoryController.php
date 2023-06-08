@@ -2,20 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Document;
+use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class HistoryController extends Controller
 {
-    public function storeHistoryPDF(Request $request, string $cpf)
+    public function storeHistoryPDF(Request $request, Student $student)
     {
         $file = $request->file('pdf');
-        $filePath = Storage::putFileAs('history', $file, "{$cpf}_historico.pdf");
+        $filePath = Storage::putFileAs('history', $file, "{$student->cpf}_historico.pdf");
 
         if(Storage::exists($filePath)) {
-            return response()->json(['data'=> $filePath, 'message' => 'Record successfully created!'], 201);
+
+            Document::create([
+                'path' => $filePath,
+                'code' => $request->input('code'),
+                'type' => 'HISTORIC',
+                'student_id' => $student->id
+            ]);
+
+            return response()->json(['data'=> $filePath, 'message' => 'Registro criado com sucesso!'], 201);
         } else {
-            return response()->json(['error'=>true, 'message'=> 'Failed to create pdf '], 500);
+            return response()->json(['error'=>true, 'message'=> 'Falha ao criar pdf '], 500);
         }
     }
 
@@ -25,20 +35,38 @@ class HistoryController extends Controller
         if (file_exists($path)):
             return response()->file($path, ['Content-Type' => 'application/pdf']);
         else:
-            return response()->json(['error'=>true, 'message'=> 'Failed to create pdf'], 500);
+            return response()->json(['error'=>true, 'message'=> 'Falha ao criar pdf'], 500);
         endif;
     }
 
     public function removeFileHistoryPDF(string $filename)
     {
-        $fileToDelete = "/history/". $filename;
+        $fileToDelete = "history/". $filename;
 
         if (Storage::exists($fileToDelete)):
             Storage::delete($fileToDelete);
-            return response()->json(['data'=> $fileToDelete, 'message' => 'File removed successfully!'], 200);
+
+            $record = Document::where('path', $fileToDelete);
+            $record->delete();
+
+            return response()->json(['data'=> $fileToDelete, 'message' => 'Arquivo removido com sucesso!'], 200);
         else:
-            return response()->json(['error'=>true, 'message'=> 'Failed to remove file, it has probably already been removed.'], 500);
+            return response()->json(['error'=>true, 'message'=> 'Falha ao remover o arquivo, provavelmente já foi removido.'], 500);
         endif;
+    }
+
+    public function hasHistoric(string $code)
+    {
+        $document = Document::where('code', $code);
+        $document->with('student');
+
+        $record = $document->get();
+
+        if(count($record)) {
+            return response()->json($record);
+        } else {
+            return response()->json(['error'=> true,'message'=> 'Não foi encontrado nenhum documento válido com este código.'], 404);
+        }
     }
 
 }

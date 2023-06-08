@@ -53,9 +53,10 @@ Route::resource('teams', TeamController::class);
 
 /** Históricos */
 Route::post('/history', [GridController::class, 'history']);
-Route::post('/historys/{cpf}/store-history-pdf/', [HistoryController::class, 'storeHistoryPDF']);
+Route::post('/historys/{student}/store-history-pdf/', [HistoryController::class, 'storeHistoryPDF']);
 Route::get('/historys/storage/{filename}', [HistoryController::class, 'verifyBlobHistoryPDF']);
 Route::get('/historys/{filename}/remove', [HistoryController::class, 'removeFileHistoryPDF']);
+Route::get('/historys/has-historic/{code}', [HistoryController::class, 'hasHistoric']);
 
 /** Etapas */
 Route::resource('stages', StageController::class);
