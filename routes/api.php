@@ -41,7 +41,7 @@ Route::resource('disciplines', DisciplineController::class);
 
 /** Grades */
 Route::resource('grids', GridController::class);
-Route::get('/grids/{team}/list-grid/', [GridController::class, 'listGrid']);
+Route::get('/grids/{team}/get-full-grid/', [GridController::class, 'getFullGrid']);
 Route::get('/grids/get-grid-template/{grid}', [GridController::class, 'getGridTemplate']);
 Route::get('/grids/remove-template-from-grid/{grid}', [GridController::class, 'removeTemplatesFromGrid']);
 
@@ -52,7 +52,6 @@ Route::resource('grid-templates', GridTemplateController::class);
 Route::resource('teams', TeamController::class);
 
 /** Históricos */
-Route::post('/history', [GridController::class, 'history']);
 Route::post('/historys/{student}/store-history-pdf/', [HistoryController::class, 'storeHistoryPDF']);
 Route::get('/historys/storage/{filename}', [HistoryController::class, 'verifyBlobHistoryPDF']);
 Route::get('/historys/{filename}/remove', [HistoryController::class, 'removeFileHistoryPDF']);
