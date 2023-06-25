@@ -21,8 +21,9 @@ Route::post('auth/me', [AuthController::class,'me']);
 
 /** Middleware */
 Route::group(['middleware' => ['apiJwt']], function () {
-    Route::get('users', [UserController::class,'index']);
 });
+Route::get('users', [UserController::class,'index']);
+Route::post('users', [UserController::class,'store']);
 
 /** Ensinos */
 Route::resource('teachings', TeachingController::class);
