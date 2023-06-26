@@ -8,11 +8,12 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StageController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\TeachingController;
 use App\Http\Controllers\DisciplineController;
 use App\Http\Controllers\GridTemplateController;
-use App\Http\Controllers\HistoryController;
 
 /** Auth */
 Route::post('auth/login', [AuthController::class,'login']);
@@ -51,6 +52,12 @@ Route::resource('grid-templates', GridTemplateController::class);
 
 /** Turmas */
 Route::resource('teams', TeamController::class);
+
+/** Documentos */
+//!ATENÇÃO
+Route::get('/documents/storage/{folder}/{filename}', [DocumentController::class, 'verifyBlobDocumentPDF']);
+Route::post('/documents/{student}', [DocumentController::class, 'store']);
+Route::get('/documents/{folder}/{filename}/remove', [DocumentController::class, 'destroy']);
 
 /** Históricos */
 Route::post('/historys/{student}/store-history-pdf/', [HistoryController::class, 'storeHistoryPDF']);

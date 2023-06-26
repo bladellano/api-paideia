@@ -51,7 +51,7 @@ class HistoryController extends Controller
 
             return response()->json(['data'=> $fileToDelete, 'message' => 'Arquivo removido com sucesso!'], 200);
         else:
-            return response()->json(['error'=>true, 'message'=> 'Falha ao remover o arquivo, provavelmente já foi removido.'], 500);
+            return response()->json(['error'=>true, 'message'=> 'Lamentamos, mas ocorreu um problema ao remover o arquivo. Parece que o arquivo já foi excluído anteriormente.'], 500);
         endif;
     }
 
