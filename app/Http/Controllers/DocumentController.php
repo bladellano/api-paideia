@@ -23,7 +23,7 @@ class DocumentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Student $student)
+    public function storeDocument(Request $request, Student $student)
     {
         $file = $request->file('pdf');
         $filePath = Storage::putFileAs($request->input('folder'), $file, "{$student->cpf}_{$request->input('document_name')}.pdf");
@@ -57,29 +57,6 @@ class DocumentController extends Controller
         else:
             return response()->json(['error' => true, 'message' => 'Lamentamos, mas ocorreu um problema ao remover o arquivo. Parece que o arquivo já foi excluído anteriormente.'], 405);
         endif;
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
     }
 
 }

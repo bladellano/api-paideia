@@ -55,8 +55,8 @@ Route::resource('teams', TeamController::class);
 
 /** Documentos */
 //!ATENÇÃO
+Route::post('/documents/{student}/store-document', [DocumentController::class, 'storeDocument']);
 Route::get('/documents/storage/{folder}/{filename}', [DocumentController::class, 'verifyBlobDocumentPDF']);
-Route::post('/documents/{student}', [DocumentController::class, 'store']);
 Route::get('/documents/{folder}/{filename}/remove', [DocumentController::class, 'destroy']);
 
 /** Históricos */
