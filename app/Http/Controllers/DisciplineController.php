@@ -47,7 +47,7 @@ class DisciplineController extends Controller
     {
         try {
             $record = Discipline::create($request->all());
-            return response()->json(['data'=> $record, 'message' => 'Record successfully created!'], 201);
+            return response()->json(['data'=> $record, 'message' => 'Registro criado com sucesso!'], 201);
         } catch (\Exception $e) {
             return response()->json(['error'=>true,'message'=>$e->getMessage()], 500);
         }
@@ -74,7 +74,7 @@ class DisciplineController extends Controller
     {
         try {
             $discipline->update($request->all());
-            return response()->json(['data'=> $discipline, 'message' => 'Registration successfully updated!']);
+            return response()->json(['data'=> $discipline, 'message' => 'Cadastro atualizado com sucesso!']);
         } catch (\Exception $e) {
             return response()->json(['error'=>true,'message'=> $e->getMessage()], 500);
         }
@@ -88,6 +88,6 @@ class DisciplineController extends Controller
     public function destroy(Discipline $discipline)
     {
         $discipline->delete();
-        return response()->json(['message' => 'Record removed successfully.']);
+        return response()->json(['message' => 'Registro removido com sucesso.']);
     }
 }

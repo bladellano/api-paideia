@@ -45,7 +45,7 @@ class StudentController extends Controller
     {
         try {
             $record = Student::create($request->all());
-            return response()->json(['data'=> $record, 'message' => 'Record successfully created!'], 201);
+            return response()->json(['data'=> $record, 'message' => 'Registro criado com sucesso!'], 201);
         } catch (\Exception $e) {
             return response()->json(['error'=>true,'message'=>$e->getMessage()], 500);
         }
@@ -72,7 +72,7 @@ class StudentController extends Controller
     {
         try {
             $student->update($request->all());
-            return response()->json(['data'=>$student, 'message' => 'Registration successfully updated!']);
+            return response()->json(['data'=>$student, 'message' => 'Cadastro atualizado com sucesso!']);
         } catch (\Exception $e) {
             return response()->json(['error'=>true,'message'=> $e->getMessage()], 500);
         }
@@ -86,6 +86,6 @@ class StudentController extends Controller
     public function destroy(Student $student)
     {
         $student->delete();
-        return response()->json(['message' => 'Record removed successfully.']);
+        return response()->json(['message' => 'Registro removido com sucesso.']);
     }
 }

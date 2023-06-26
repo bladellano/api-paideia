@@ -57,7 +57,7 @@ class GridController extends Controller
     {
         try {
             $record = Grid::create($request->all());
-            return response()->json(['data'=> $record, 'message' => 'Record successfully created!'], 201);
+            return response()->json(['data'=> $record, 'message' => 'Registro criado com sucesso!'], 201);
 
         } catch (\Exception $e) {
             return response()->json(['error'=>true,'message'=>$e->getMessage()], 500);
@@ -85,7 +85,7 @@ class GridController extends Controller
     {
         try {
             $grid->update($request->all());
-            return response()->json(['data'=>$grid, 'message' => 'Registration successfully updated!']);
+            return response()->json(['data'=>$grid, 'message' => 'Cadastro atualizado com sucesso!']);
 
         } catch (\Exception $e) {
             return response()->json(['error'=>true,'message'=> $e->getMessage()], 500);
@@ -100,7 +100,7 @@ class GridController extends Controller
     public function destroy(Grid $grid)
     {
         $grid->delete();
-        return response()->json(['message' => 'Record removed successfully.']);
+        return response()->json(['message' => 'Registro removido com sucesso.']);
     }
 
     /**

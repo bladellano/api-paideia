@@ -59,4 +59,18 @@ class DocumentController extends Controller
         endif;
     }
 
+    public function hasDocument(string $code)
+    {
+        $document = Document::where('code', $code);
+        $document->with('student');
+
+        $record = $document->get();
+
+        if(count($record)) {
+            return response()->json($record);
+        } else {
+            return response()->json(['error'=> true,'message'=> 'Não foi encontrado nenhum documento válido com este código.'], 404);
+        }
+    }
+
 }

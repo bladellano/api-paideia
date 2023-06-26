@@ -44,7 +44,7 @@ class PoloController extends Controller
     {
         try {
             $record = Polo::create($request->all());
-            return response()->json(['data'=> $record, 'message' => 'Record successfully created!'], 201);
+            return response()->json(['data'=> $record, 'message' => 'Registro criado com sucesso!'], 201);
 
         } catch (\Exception $e) {
             return response()->json(['error'=>true,'message'=>$e->getMessage()], 500);
@@ -71,7 +71,7 @@ class PoloController extends Controller
     {
         try {
             $polo->update($request->all());
-            return response()->json(['data'=>$polo, 'message' => 'Registration successfully updated!']);
+            return response()->json(['data'=>$polo, 'message' => 'Cadastro atualizado com sucesso!']);
 
         } catch (\Exception $e) {
             return response()->json(['error'=>true,'message'=> $e->getMessage()], 500);
@@ -86,6 +86,6 @@ class PoloController extends Controller
     public function destroy(Polo $polo)
     {
         $polo->delete();
-        return response()->json(['message' => 'Record removed successfully.']);
+        return response()->json(['message' => 'Registro removido com sucesso.']);
     }
 }

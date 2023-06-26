@@ -49,7 +49,7 @@ class GridTemplateController extends Controller
                 GridTemplate::create($rowTemplate);
             endforeach;
 
-            return response()->json(['data'=> $request->all(), 'message' => 'Record successfully created!'], 201);
+            return response()->json(['data'=> $request->all(), 'message' => 'Registro criado com sucesso!'], 201);
 
         } catch (\Exception $e) {
             return response()->json(['error'=>true,'message'=>$e->getMessage()], 500);

@@ -8,7 +8,6 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StageController;
 use App\Http\Controllers\CourseController;
-use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\TeachingController;
@@ -22,7 +21,9 @@ Route::post('auth/me', [AuthController::class,'me']);
 
 /** Middleware */
 Route::group(['middleware' => ['apiJwt']], function () {
+    //add rotas para proteger
 });
+
 Route::get('users', [UserController::class,'index']);
 Route::post('users', [UserController::class,'store']);
 
@@ -41,31 +42,28 @@ Route::resource('students', StudentController::class);
 /** Disciplinas */
 Route::resource('disciplines', DisciplineController::class);
 
+/** Turmas */
+Route::resource('teams', TeamController::class);
+
+/** Grades Templates */
+Route::resource('grid-templates', GridTemplateController::class);
+
+/** Etapas */
+Route::resource('stages', StageController::class);
+
 /** Grades */
 Route::resource('grids', GridController::class);
 Route::get('/grids/{team}/get-full-grid/', [GridController::class, 'getFullGrid']);
 Route::get('/grids/get-grid-template/{grid}', [GridController::class, 'getGridTemplate']);
 Route::get('/grids/remove-template-from-grid/{grid}', [GridController::class, 'removeTemplatesFromGrid']);
 
-/** Grades Templates */
-Route::resource('grid-templates', GridTemplateController::class);
-
-/** Turmas */
-Route::resource('teams', TeamController::class);
-
 /** Documentos */
-//!ATENÇÃO
-Route::post('/documents/{student}/store-document', [DocumentController::class, 'storeDocument']);
-Route::get('/documents/storage/{folder}/{filename}', [DocumentController::class, 'verifyBlobDocumentPDF']);
-Route::get('/documents/{folder}/{filename}/remove', [DocumentController::class, 'destroy']);
+Route::prefix('documents')->group(function () {
+    Route::post('/{student}/store-document', [DocumentController::class, 'storeDocument']);
+    Route::get('/storage/{folder}/{filename}', [DocumentController::class, 'verifyBlobDocumentPDF']);
+    Route::get('/{folder}/{filename}/remove', [DocumentController::class, 'destroy']);
+    Route::get('/has-document/{code}', [DocumentController::class, 'hasDocument']);
+});
 
-/** Históricos */
-Route::post('/historys/{student}/store-history-pdf/', [HistoryController::class, 'storeHistoryPDF']);
-Route::get('/historys/storage/{filename}', [HistoryController::class, 'verifyBlobHistoryPDF']);
-Route::get('/historys/{filename}/remove', [HistoryController::class, 'removeFileHistoryPDF']);
-Route::get('/historys/has-historic/{code}', [HistoryController::class, 'hasHistoric']);
-
-/** Etapas */
-Route::resource('stages', StageController::class);
 
 
