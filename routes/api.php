@@ -1,18 +1,20 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\GridController;
-use App\Http\Controllers\PoloController;
-use App\Http\Controllers\TeamController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\StageController;
-use App\Http\Controllers\CourseController;
-use App\Http\Controllers\StudentController;
-use App\Http\Controllers\DocumentController;
-use App\Http\Controllers\TeachingController;
-use App\Http\Controllers\DisciplineController;
-use App\Http\Controllers\GridTemplateController;
+use App\Http\Controllers\{
+    AuthController,
+    GridController,
+    PoloController,
+    TeamController,
+    UserController,
+    StageController,
+    CourseController,
+    StudentController,
+    DocumentController,
+    TeachingController,
+    DisciplineController,
+    GridTemplateController
+};
 
 /** Auth */
 Route::post('auth/login', [AuthController::class,'login']);
@@ -44,6 +46,7 @@ Route::resource('disciplines', DisciplineController::class);
 
 /** Turmas */
 Route::resource('teams', TeamController::class);
+Route::post('/teams/register-student', [TeamController::class, 'registerStudent']);
 
 /** Grades Templates */
 Route::resource('grid-templates', GridTemplateController::class);

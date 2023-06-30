@@ -20,7 +20,9 @@ class Student extends Model
 
     public function teams()
     {
-        return $this->belongsToMany(Team::class, 'student_teams');
+        return $this->belongsToMany(Team::class, 'student_teams')
+        ->withTimestamps()
+        ->wherePivot('deleted_at', null);
     }
 
 }

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StudentTeamRequest;
 use App\Models\Team;
 use Illuminate\Http\Request;
 use App\Http\Requests\TeamRequest;
+use App\Models\StudentTeam;
 
 class TeamController extends Controller
 {
@@ -38,6 +40,29 @@ class TeamController extends Controller
         return response()->json($itens);
     }
 
+    public function registerStudent(StudentTeamRequest $request)
+    {
+        try {
+            $register = StudentTeam::where('student_id', $request->input('student_id'))->first();
+
+            if($register):
+                $register->registered = 0;
+                $register->save();
+                $register->delete();
+            endif;
+
+            if(!$request->input('team_id'))
+                return response()->json(['message' => 'Matrícula removida com sucesso!'], 200);
+
+            $record = StudentTeam::create($request->all());
+            return response()->json(['data'=> $record, 'message' => 'Matrícula efetuada com sucesso!'], 201);
+
+
+        } catch (\Exception $e) {
+            return response()->json(['error'=>true,'message'=> $e->getMessage()], 422);
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      * @param TeamRequest $request
@@ -50,7 +75,7 @@ class TeamController extends Controller
             return response()->json(['data'=> $record, 'message' => 'Registro criado com sucesso!'], 201);
 
         } catch (\Exception $e) {
-            return response()->json(['error'=>true,'message'=>$e->getMessage()], 500);
+            return response()->json(['error'=>true,'message'=>$e->getMessage()], 422);
         }
     }
 

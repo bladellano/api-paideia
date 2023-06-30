@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Rules\GenderRule;
-use Illuminate\Foundation\Http\FormRequest;
 
 class StudentRequest extends APIFormRequest
 {
@@ -44,7 +43,7 @@ class StudentRequest extends APIFormRequest
     public function messages(): array
     {
         return [
-            'cpf.cpf' => 'CPF number is invalid.',
+            'cpf.cpf' => 'O número CPF é inválido.',
         ];
     }
 }
