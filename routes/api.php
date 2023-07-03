@@ -13,7 +13,8 @@ use App\Http\Controllers\{
     DocumentController,
     TeachingController,
     DisciplineController,
-    GridTemplateController
+    GridTemplateController,
+    ReportController
 };
 
 /** Auth */
@@ -25,6 +26,9 @@ Route::post('auth/me', [AuthController::class,'me']);
 Route::group(['middleware' => ['apiJwt']], function () {
     //add rotas para proteger
 });
+
+/** Reports */
+Route::get('reports/general-report-of-students', [ReportController::class,'generalReportOfStudents']);
 
 Route::get('users', [UserController::class,'index']);
 Route::post('users', [UserController::class,'store']);
