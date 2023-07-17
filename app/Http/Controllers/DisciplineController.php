@@ -2,92 +2,54 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\DisciplineRequest;
 use App\Models\Discipline;
 use Illuminate\Http\Request;
+use App\Http\Requests\DisciplineRequest;
+use App\Services\DisciplineService;
+use Illuminate\Http\Response;
 
 class DisciplineController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
+    private $service;
+
+    public function __construct(DisciplineService $service)
     {
-        $query = Discipline::query();
-
-        $search   = $request->input('search');
-        $sortBy   = $request->input('sortBy');
-        $sortDesc = $request->input('sortDesc');
-
-        $perPage = $request->input('perPage') ?? 10;
-
-        $page = $request->input('page') ?? 1;
-
-        if ($search) {
-            $query->where('name', 'like', "%$search%");
-        }
-
-        if ($sortBy) {
-            $query->orderBy($sortBy, $sortDesc ? 'desc' : 'asc');
-        }
-
-        $itens = $query->paginate($perPage, ['*'], 'page', $page);
-
-        return response()->json($itens);
+        $this->service = $service;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     * @param DisciplineRequest $request
-     * @return void
-     */
+    public function index(Request $request)
+    {
+        return $this->service->getAll($request);
+    }
+
     public function store(DisciplineRequest $request)
     {
         try {
-            $record = Discipline::create($request->all());
-            return response()->json(['data'=> $record, 'message' => 'Registro criado com sucesso!'], 201);
+            $data = $this->service->create($request->all());
+            return response()->json(['data'=> $data, 'message' => 'Registro criado com sucesso!'], Response::HTTP_CREATED);
         } catch (\Exception $e) {
-            return response()->json(['error'=>true,'message'=>$e->getMessage()], 500);
+            return response()->json(['error'=> true, 'message'=> $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Discipline  $discipline
-     * @return \Illuminate\Http\Response
-     */
     public function show(Discipline $discipline)
     {
-        return response()->json([$discipline]);
+        return $this->service->find($discipline->id);
     }
 
-    /**
-     * Update the specified resource in storage.
-     * @param DisciplineRequest $request
-     * @param Discipline $discipline
-     * @return void
-     */
     public function update(DisciplineRequest $request, Discipline $discipline)
     {
         try {
-            $discipline->update($request->all());
-            return response()->json(['data'=> $discipline, 'message' => 'Cadastro atualizado com sucesso!']);
+            $data = $this->service->update($discipline->id, $request->all());
+            return response()->json(['data' => $data, 'message' => 'Cadastro atualizado com sucesso!']);
         } catch (\Exception $e) {
-            return response()->json(['error'=>true,'message'=> $e->getMessage()], 500);
+            return response()->json(['error' => true, 'message'=> $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     * @param  \App\Models\Discipline  $discipline
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Discipline $discipline)
     {
-        $discipline->delete();
+        $this->service->delete($discipline->id);
         return response()->json(['message' => 'Registro removido com sucesso.']);
     }
 }

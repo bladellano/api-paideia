@@ -5,87 +5,51 @@ namespace App\Http\Controllers;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use App\Http\Requests\StudentRequest;
+use App\Services\StudentService;
+use Illuminate\Http\Response;
 
 class StudentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
+    private $service;
+
+    public function __construct(StudentService $service)
     {
-        $query = Student::query();
-        $query->with('teams');
-
-        $search   = $request->input('search');
-        $sortBy   = $request->input('sortBy');
-        $sortDesc = $request->input('sortDesc');
-
-        $perPage = $request->input('perPage') ?? 10;
-
-        $page = $request->input('page') ?? 1;
-
-        if ($search)
-            $query->where('name', 'like', "%$search%");
-
-        if ($sortBy)
-            $query->orderBy($sortBy, $sortDesc ? 'desc' : 'asc');
-
-        $itens = $query->paginate($perPage, ['*'], 'page', $page);
-
-        return response()->json($itens);
+        $this->service = $service;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     * @param StudentRequest $request
-     * @return void
-     */
+    public function index(Request $request)
+    {
+        return $this->service->getAll($request,['teams']);
+    }
+
     public function store(StudentRequest $request)
     {
         try {
-            $record = Student::create($request->all());
-            return response()->json(['data'=> $record, 'message' => 'Registro criado com sucesso!'], 201);
+            $data = $this->service->create($request->all());
+            return response()->json(['data'=> $data, 'message' => 'Registro criado com sucesso!'], Response::HTTP_CREATED);
         } catch (\Exception $e) {
-            return response()->json(['error'=>true,'message'=>$e->getMessage()], 500);
+            return response()->json(['error'=> true, 'message'=> $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 
-    /**
-     * Display the specified resource.
-     * @param Student $student
-     * @return void
-     */
-    public function show( Student $student)
+    public function show(Student $student)
     {
-        $student->teams;
-        return response()->json([$student]);
+        return $this->service->find($student->id);
     }
 
-    /**
-     * Update the specified resource in storage.
-    * @param StudentRequest $request
-    * @param Student $student
-    * @return void
-    */
     public function update(StudentRequest $request, Student $student)
     {
         try {
-            $student->update($request->all());
-            return response()->json(['data'=>$student, 'message' => 'Cadastro atualizado com sucesso!']);
+            $data = $this->service->update($student->id, $request->all());
+            return response()->json(['data' => $data, 'message' => 'Cadastro atualizado com sucesso!']);
         } catch (\Exception $e) {
-            return response()->json(['error'=>true,'message'=> $e->getMessage()], 500);
+            return response()->json(['error' => true, 'message'=> $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     * @param  \App\Models\Student  $student
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Student $student)
     {
-        $student->delete();
+        $this->service->delete($student->id);
         return response()->json(['message' => 'Registro removido com sucesso.']);
     }
 }

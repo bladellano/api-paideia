@@ -4,48 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\Grid;
 use App\Models\Team;
-use Illuminate\Http\Request;
-use App\Http\Requests\GridRequest;
 use App\Models\GridTemplate;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Services\BuildFullGrid;
+use App\Http\Requests\GridRequest;
+use App\Repositories\GridRepository;
 
 class GridController extends Controller
 {
     private $buildFullGrid;
+    private $repository;
 
-    public function __construct(BuildFullGrid $buildFullGrid)
+    public function __construct(BuildFullGrid $buildFullGrid, GridRepository $repository)
     {
         $this->buildFullGrid = $buildFullGrid;
+        $this->repository = $repository;
     }
 
-    /**
-     * Display a listing of the resource.
-     * @return \Illuminate\Http\Response
-     */
     public function index(Request $request)
     {
-        $query = Grid::query();
-        $query->with('gridTemplates');
-
-        $search   = $request->input('search');
-        $sortBy   = $request->input('sortBy');
-        $sortDesc = $request->input('sortDesc');
-
-        $perPage = $request->input('perPage') ?? 10;
-
-        $page = $request->input('page') ?? 1;
-
-        if ($search) {
-            $query->where('name', 'like', "%$search%");
-        }
-
-        if ($sortBy) {
-            $query->orderBy($sortBy, $sortDesc ? 'desc' : 'asc');
-        }
-
-        $itens = $query->paginate($perPage, ['*'], 'page', $page);
-
-        return response()->json($itens);
+        return $this->repository->getAll($request, ['gridTemplates']);
     }
 
     /**
@@ -57,10 +36,10 @@ class GridController extends Controller
     {
         try {
             $record = Grid::create($request->all());
-            return response()->json(['data'=> $record, 'message' => 'Registro criado com sucesso!'], 201);
+            return response()->json(['data' => $record, 'message' => 'Registro criado com sucesso!'], Response::HTTP_CREATED);
 
         } catch (\Exception $e) {
-            return response()->json(['error'=>true,'message'=>$e->getMessage()], 500);
+            return response()->json(['error' => true, 'message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -85,10 +64,10 @@ class GridController extends Controller
     {
         try {
             $grid->update($request->all());
-            return response()->json(['data'=>$grid, 'message' => 'Cadastro atualizado com sucesso!']);
+            return response()->json(['data' => $grid, 'message' => 'Cadastro atualizado com sucesso!']);
 
         } catch (\Exception $e) {
-            return response()->json(['error'=>true,'message'=> $e->getMessage()], 500);
+            return response()->json(['error' => true, 'message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -119,9 +98,9 @@ class GridController extends Controller
     {
         try {
             $record = GridTemplate::where('grid_id', $grid->id);
-            return response()->json(['data'=> $record->get()]);
+            return response()->json(['data' => $record->get()]);
         } catch (\Exception $e) {
-            return response()->json(['error'=>true, 'message'=>$e->getMessage()], 500);
+            return response()->json(['error' => true, 'message'=>$e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -131,7 +110,7 @@ class GridController extends Controller
             GridTemplate::where('grid_id', $grid->id)->forceDelete();
             return response()->json(['message' => 'Registros removidos com sucesso.']);
         } catch (\Exception $e) {
-            return response()->json(['error'=>true,'message'=> $e->getMessage()], 500);
+            return response()->json(['error'=>true,'message'=> $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 }

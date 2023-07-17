@@ -5,88 +5,51 @@ namespace App\Http\Controllers;
 use App\Models\Stage;
 use Illuminate\Http\Request;
 use App\Http\Requests\StageRequest;
+use App\Services\StageService;
+use Illuminate\Http\Response;
 
 class StageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
+    private $service;
+
+    public function __construct(StageService $service)
     {
-        $query = Stage::query();
-
-        $search   = $request->input('search');
-        $sortBy   = $request->input('sortBy');
-        $sortDesc = $request->input('sortDesc');
-
-        $perPage = $request->input('perPage') ?? 10;
-
-        $page = $request->input('page') ?? 1;
-
-        if ($search) {
-            $query->where('stage', 'like', "%$search%");
-        }
-
-        if ($sortBy) {
-            $query->orderBy($sortBy, $sortDesc ? 'desc' : 'asc');
-        }
-
-        $itens = $query->paginate($perPage, ['*'], 'page', $page);
-
-        return response()->json($itens);
+        $this->service = $service;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     * @param StageRequest $request
-     * @return \Illuminate\Http\Response
-     */
+    public function index(Request $request)
+    {
+        return $this->service->getAll($request);
+    }
+
     public function store(StageRequest $request)
     {
         try {
-            $record = Stage::create($request->all());
-            return response()->json(['data'=> $record, 'message' => 'Registro criado com sucesso!'], 201);
+            $data = $this->service->create($request->all());
+            return response()->json(['data'=> $data, 'message' => 'Registro criado com sucesso!'], Response::HTTP_CREATED);
         } catch (\Exception $e) {
-            return response()->json(['error'=>true,'message'=>$e->getMessage()], 500);
+            return response()->json(['error'=> true, 'message'=> $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 
-    /**
-     * Display the specified resource.
-     * @param  \App\Models\Stage  $stage
-     * @return \Illuminate\Http\Response
-     */
     public function show(Stage $stage)
     {
-        return response()->json([$stage]);
+        return $this->service->find($stage->id);
     }
 
-    /**
-     * Update the specified resource in storage.
-     * @param \Illuminate\Http\Request  $request
-     * @param Request $stage
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Stage $stage)
+    public function update(StageRequest $request, Stage $stage)
     {
         try {
-            $stage->update($request->all());
-            return response()->json(['data'=> $stage, 'message' => 'Cadastro atualizado com sucesso!']);
+            $data = $this->service->update($stage->id, $request->all());
+            return response()->json(['data' => $data, 'message' => 'Cadastro atualizado com sucesso!']);
         } catch (\Exception $e) {
-            return response()->json(['error'=>true,'message'=> $e->getMessage()], 500);
+            return response()->json(['error' => true, 'message'=> $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     * @param  \App\Models\Stage  $stage
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Stage $stage)
     {
-        $stage->forceDelete();
-
+        $this->service->delete($stage->id);
         return response()->json(['message' => 'Registro removido com sucesso.']);
     }
 }

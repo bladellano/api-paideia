@@ -5,87 +5,51 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use App\Http\Requests\CourseRequest;
+use App\Services\CourseService;
+use Illuminate\Http\Response;
 
 class CourseController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
+    private $service;
+
+    public function __construct(CourseService $service)
     {
-        $query = Course::query();
-        $query->with('teaching');
-
-        $search   = $request->input('search');
-        $sortBy   = $request->input('sortBy');
-        $sortDesc = $request->input('sortDesc');
-
-        $perPage = $request->input('perPage') ?? 10;
-
-        $page = $request->input('page') ?? 1;
-
-        if ($search)
-            $query->where('name', 'like', "%$search%");
-
-        if ($sortBy)
-            $query->orderBy($sortBy, $sortDesc ? 'desc' : 'asc');
-
-        $itens = $query->paginate($perPage, ['*'], 'page', $page);
-
-        return response()->json($itens);
+        $this->service = $service;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     * @param CourseRequest $request
-     * @return void
-     */
+    public function index(Request $request)
+    {
+        return $this->service->getAll($request, ['teaching']);
+    }
+
     public function store(CourseRequest $request)
     {
         try {
-            $record = Course::create($request->all());
-            return response()->json(['data'=> $record, 'message' => 'Registro criado com sucesso!'], 201);
+            $data = $this->service->create($request->all());
+            return response()->json(['data'=> $data, 'message' => 'Registro criado com sucesso!'], Response::HTTP_CREATED);
         } catch (\Exception $e) {
-            return response()->json(['error'=>true,'message'=>$e->getMessage()], 500);
+            return response()->json(['error'=> true, 'message'=> $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 
-    /**
-     * Display the specified resource.
-     * @param  \App\Models\Course  $course
-     * @return \Illuminate\Http\Response
-     */
     public function show(Course $course)
     {
-        $course->teaching;
-        return response()->json([$course]);
+        return $this->service->find($course->id);
     }
 
-    /**
-     * Update the specified resource in storage.
-     * @param CourseRequest $request
-     * @param Course $course
-     * @return void
-     */
     public function update(CourseRequest $request, Course $course)
     {
         try {
-            $course->update($request->all());
-            return response()->json(['data'=>$course, 'message' => 'Cadastro atualizado com sucesso!']);
+            $data = $this->service->update($course->id, $request->all());
+            return response()->json(['data' => $data, 'message' => 'Cadastro atualizado com sucesso!']);
         } catch (\Exception $e) {
-            return response()->json(['error'=>true,'message'=> $e->getMessage()], 500);
+            return response()->json(['error' => true, 'message'=> $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     * @param  \App\Models\Course  $course
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Course $course)
     {
-        $course->delete();
+        $this->service->delete($course->id);
         return response()->json(['message' => 'Registro removido com sucesso.']);
     }
 }

@@ -4,37 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Models\GridTemplate;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Repositories\GridTemplateRepository;
 
 class GridTemplateController extends Controller
 {
+
+    private $repository;
+
+    public function __construct(GridTemplateRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
     /**
      * Display a listing of the resource.
-     *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
-        $query = GridTemplate::query();
-
-        $search   = $request->input('search');
-        $sortBy   = $request->input('sortBy');
-        $sortDesc = $request->input('sortDesc');
-
-        $perPage = $request->input('perPage') ?? 10;
-
-        $page = $request->input('page') ?? 1;
-
-        if ($search) {
-            $query->where('name', 'like', "%$search%");
-        }
-
-        if ($sortBy) {
-            $query->orderBy($sortBy, $sortDesc ? 'desc' : 'asc');
-        }
-
-        $itens = $query->paginate($perPage, ['*'], 'page', $page);
-
-        return response()->json($itens);
+        return $this->repository->getAll($request);
     }
 
     /**
@@ -49,10 +38,10 @@ class GridTemplateController extends Controller
                 GridTemplate::create($rowTemplate);
             endforeach;
 
-            return response()->json(['data'=> $request->all(), 'message' => 'Registro criado com sucesso!'], 201);
+            return response()->json(['data'=> $request->all(), 'message' => 'Registro criado com sucesso!'], Response::HTTP_CREATED);
 
         } catch (\Exception $e) {
-            return response()->json(['error'=>true,'message'=>$e->getMessage()], 500);
+            return response()->json(['error'=>true,'message'=>$e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -70,27 +59,4 @@ class GridTemplateController extends Controller
         return response()->json([$gridTemplate]);
     }
 
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\GridTemplate  $gridTemplate
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, GridTemplate $gridTemplate)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\GridTemplate  $gridTemplate
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(GridTemplate $gridTemplate)
-    {
-        //
-    }
 }
