@@ -17,4 +17,8 @@ class Discipline extends Model
         'created_at' => 'datetime:d/m/Y H:m:s',
     ];
 
+    public function teaching()
+    {
+        return $this->belongsTo(Teaching::class, 'teaching_id');
+    }
 }

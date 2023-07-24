@@ -19,7 +19,7 @@ class DisciplineController extends Controller
 
     public function index(Request $request)
     {
-        return $this->service->getAll($request);
+        return $this->service->getAll($request,['teaching']);
     }
 
     public function store(DisciplineRequest $request)

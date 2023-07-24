@@ -21,8 +21,7 @@ class StudentTeamRequest extends APIFormRequest
     public function rules()
     {
         return [
-            'team_id' => 'unique:student_teams,team_id,NULL,id,deleted_at, NULL,student_id,'. $this->input('student_id'),
-            'student_id' => 'required|exists:students,id|unique:student_teams,student_id,NULL,id,deleted_at, NULL,team_id,'. $this->input('team_id'),
+            'student_id' => 'required|exists:students,id',
         ];
     }
 

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Models\Team;
 use App\Models\StudentTeam;
-use Illuminate\Http\Request;
 use App\Services\TeamService;
-use Illuminate\Http\Response;
 use App\Http\Requests\TeamRequest;
 use App\Http\Requests\StudentTeamRequest;
 
@@ -63,7 +63,7 @@ class TeamController extends Controller
             if($register):
                 $register->registered = 0;
                 $register->save();
-                $register->delete();
+                $register->forceDelete();
             endif;
 
             if(!$request->input('team_id')) {

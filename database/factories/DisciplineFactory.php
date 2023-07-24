@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Teaching;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,9 +18,11 @@ class DisciplineFactory extends Factory
     {
 
         return [
-            'name'=> "Disciplina ". $this->faker->name,
-            'amount_of_reviews'=> $this->faker->numberBetween(1, 4),
-            'workload'=> collect(['80', '60','100'])->random(),
+            'name'=> collect(['MATEMÁTICA', 'CIÊNCIAS','PORTUGUÊS','LITERATURA','INGLÊS','QUÍMICA','GEOGRAFIA','DIGITAÇÃO','FÍSICA','SOCIOLOGIA','FILOSOFIA','BIOLOGIA'])->random(),
+            'amount_of_reviews' => $this->faker->numberBetween(1, 4),
+            'workload' => collect(['80', '60','100','150','70'])->random(),
+            'teaching_id' => collect([3,4,2])->random(),
+            // 'teaching_id' => Teaching::all()->random()->id,
         ];
     }
 }

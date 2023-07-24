@@ -25,7 +25,9 @@ class DisciplineService
 
     public function find(int $id)
     {
-        return [$this->repository->find($id)];
+        $discipline = $this->repository->find($id);
+        $discipline->teaching;
+        return [$discipline];
     }
 
     public function update(int $id, array $data)
