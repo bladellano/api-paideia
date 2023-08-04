@@ -11,7 +11,7 @@ class Discipline extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['name','amount_of_reviews','workload'];
+    protected $fillable = ['name','amount_of_reviews','workload','teaching_id'];
 
     protected $casts = [
         'created_at' => 'datetime:d/m/Y H:m:s',
