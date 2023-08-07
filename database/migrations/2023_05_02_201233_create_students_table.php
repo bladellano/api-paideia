@@ -16,11 +16,11 @@ return new class extends Migration
             $table->id();
 
             $table->string('name',100);
-            $table->string('email')->unique();
-            $table->string('phone',14);
+            $table->string('email')->nullable();
+            $table->string('phone',14)->nullable();
+            $table->string('rg',15)->nullable();
             $table->string('cpf',11);
-            $table->string('rg',15);
-            $table->string('expedient_body',25);
+            $table->string('expedient_body',25)->nullable();
             $table->string('nationality',40);
             $table->string('naturalness',40);
             $table->string('name_mother',100);

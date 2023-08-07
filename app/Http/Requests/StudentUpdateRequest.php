@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Rules\GenderRule;
 
-class StudentRequest extends APIFormRequest
+class StudentUpdateRequest extends APIFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,11 +23,7 @@ class StudentRequest extends APIFormRequest
     {
         return [
             'name' => 'required|min:3',
-            'email' => 'email',
-            'phone' => 'regex:/^\(\d{2}\)\d{5}-\d{4}$/',
             'cpf' => 'required|cpf',
-            'rg' => '',
-            'expedient_body' => '',
             'name_mother' => 'required|min:3',
             'birth_date' => 'required|date',
             'gender' => ['required',new GenderRule()],

@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use Illuminate\Http\Request;
-use App\Http\Requests\StudentRequest;
-use App\Services\StudentService;
 use Illuminate\Http\Response;
+use App\Services\StudentService;
+use App\Http\Requests\StudentRequest;
+use App\Http\Requests\StudentUpdateRequest;
 
 class StudentController extends Controller
 {
@@ -37,7 +38,7 @@ class StudentController extends Controller
         return $this->service->find($student->id);
     }
 
-    public function update(StudentRequest $request, Student $student)
+    public function update(StudentUpdateRequest $request, Student $student)
     {
         try {
             $data = $this->service->update($student->id, $request->all());
