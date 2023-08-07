@@ -16,7 +16,7 @@ class PoloFactory extends Factory
     public function definition()
     {
         return [
-            'name'=> 'Pólo ' . $this->faker->name,
+            'name'=> 'Polo ' . $this->faker->name,
             'city'=> $this->faker->city,
             'uf'=> collect(['PA','CE','MG','RJ'])->random(),
             'responsible'=> $this->faker->name,

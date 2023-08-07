@@ -34,9 +34,8 @@ class BuildFullGrid
             return (array) $item;
         }, $rawData);
 
-        if(!$rawData) {
+        if(!$rawData)
             return response()->json([]);
-        }
 
         $grid_name = $rawData[0]['grid_name'];
         $course_name = $rawData[0]['course_name'];
@@ -58,19 +57,19 @@ class BuildFullGrid
             return $acc;
         }, []);
 
+        $arrStages = [];
+
+        foreach($result as $v)
+            foreach($v as $p => $k)
+                $arrStages[] = ($p);
+        $arrStages = array_unique($arrStages);
+
         $maxCount = count(array_unique(array_column($rawData, 'stage_id')));
 
-        foreach ($result as &$subAr) {
+        foreach ($result as &$subAr)
             $subAr = array_pad($subAr, $maxCount, []);
-        }
 
         unset($subAr);
-
-        //Range
-        $arrStages = [];
-        foreach (range(1, $maxCount) as $number) {
-            $arrStages[] = 'stage_' . $number;
-        }
 
         $result = array_map(function ($item) use ($arrStages) {
 
@@ -93,12 +92,15 @@ class BuildFullGrid
 
         }, $result);
 
+        $stagesNumbers =  array_map(fn ($item) => (int) preg_replace('/[^0-9]/','',$item), $arrStages);
+        sort($stagesNumbers);
         return [
             'grid_name' => $grid_name,
             'course_name' => $course_name,
             'total_stage' => $maxCount,
             'total_workload' => $totalWorkload,
-            'list' =>$result
+            'list' => $result,
+            'stagesNumbers' => $stagesNumbers,
         ];
     }
 }

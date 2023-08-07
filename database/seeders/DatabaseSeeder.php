@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // Pólos
+        // Polos
         \App\Models\Polo::factory(10)->create();
 
         // Ensinos com Cursos

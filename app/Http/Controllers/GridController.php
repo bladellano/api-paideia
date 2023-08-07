@@ -6,25 +6,25 @@ use App\Models\Grid;
 use App\Models\Team;
 use App\Models\GridTemplate;
 use Illuminate\Http\Request;
+use App\Services\GridService;
 use Illuminate\Http\Response;
 use App\Services\BuildFullGrid;
 use App\Http\Requests\GridRequest;
-use App\Repositories\GridRepository;
 
 class GridController extends Controller
 {
     private $buildFullGrid;
-    private $repository;
+    private $service;
 
-    public function __construct(BuildFullGrid $buildFullGrid, GridRepository $repository)
+    public function __construct(BuildFullGrid $buildFullGrid, GridService $service)
     {
         $this->buildFullGrid = $buildFullGrid;
-        $this->repository = $repository;
+        $this->service = $service;
     }
 
     public function index(Request $request)
     {
-        return $this->repository->getAll($request, ['gridTemplates']);
+        return $this->service->getAll($request, ['gridTemplates']);
     }
 
     /**
@@ -78,8 +78,12 @@ class GridController extends Controller
      */
     public function destroy(Grid $grid)
     {
-        $grid->delete();
-        return response()->json(['message' => 'Registro removido com sucesso.']);
+        try {
+            $this->service->delete($grid->id);
+            return response()->json(['message' => 'Registro removido com sucesso.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Não é possível remover esta grade, pois ela está relacionada a uma turma.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
     /**
