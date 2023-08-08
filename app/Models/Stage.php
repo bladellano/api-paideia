@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Stage extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     protected $fillable = ['stage','description'];
 

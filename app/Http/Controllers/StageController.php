@@ -49,7 +49,11 @@ class StageController extends Controller
 
     public function destroy(Stage $stage)
     {
-        $this->service->delete($stage->id);
-        return response()->json(['message' => 'Registro removido com sucesso.']);
+        try {
+            $this->service->delete($stage->id);
+            return response()->json(['message' => 'Registro removido com sucesso.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'A remoção desse registro não é viável devido ao fato de que ele já está associado a outra tabela'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 }

@@ -82,7 +82,7 @@ class GridController extends Controller
             $this->service->delete($grid->id);
             return response()->json(['message' => 'Registro removido com sucesso.']);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Não é possível remover esta grade, pois ela está relacionada a uma turma.'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['message' => 'A remoção desse registro não é viável devido ao fato de que ele já está associado a outra tabela.'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 

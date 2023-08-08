@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Team extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     protected $fillable = ['name','start_date','end_date','polo_id','course_id','grid_id'];
 

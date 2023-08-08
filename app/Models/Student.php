@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Student extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     protected $fillable = ['name','email','phone','cpf','rg','expedient_body','nationality','naturalness','name_mother','birth_date','gender'];
 

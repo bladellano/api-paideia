@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Discipline extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     protected $fillable = ['name','amount_of_reviews','workload','teaching_id'];
 
