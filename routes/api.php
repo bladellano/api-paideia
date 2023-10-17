@@ -14,8 +14,11 @@ use App\Http\Controllers\{
     TeachingController,
     DisciplineController,
     GridTemplateController,
-    ReportController
+    ReportController,
+    MailController
 };
+
+Route::get('send-mail', [MailController::class, 'index']);
 
 /** Auth */
 Route::post('auth/login', [AuthController::class,'login']);
