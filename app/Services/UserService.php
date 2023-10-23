@@ -38,7 +38,9 @@ class UserService
 
     public function update(int $id, array $data)
     {
-        $data['password'] = Hash::make($data['password']);
+        if(isset($data['password']))
+            $data['password'] = Hash::make($data['password']);
+
         return $this->repository->update($id, $data);
     }
 }

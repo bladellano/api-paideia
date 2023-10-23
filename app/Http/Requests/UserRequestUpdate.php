@@ -22,7 +22,7 @@ class UserRequestUpdate extends APIFormRequest
         return [
             'name' => 'required',
             'email' => 'required|exists:users,email',
-            'password' => 'required|min:6',
+            'password' => 'min:6',
         ];
     }
 }
