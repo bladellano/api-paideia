@@ -25,15 +25,16 @@ Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/logout', [AuthController::class, 'logout']);
 Route::post('auth/me', [AuthController::class, 'me']);
 
+/** Reports */
+/** @todo VERIFICAR PORQUE NAO FUNCIONA DENTRO DO MIDDLEWARE */
+Route::get('reports/general-report-of-students', [ReportController::class, 'generalReportOfStudents']);
+
 /** Middleware */
 Route::group(['middleware' => ['apiJwt']], function () {
     //add rotas para proteger
 
     /** Cursos */
     Route::resource('courses', CourseController::class);
-
-    /** Reports */
-    Route::get('reports/general-report-of-students', [ReportController::class, 'generalReportOfStudents']);
 
     /** Usuarios */
     Route::resource('users', UserController::class);
