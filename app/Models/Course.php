@@ -11,7 +11,7 @@ class Course extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['name','workload','teaching_id'];
+    protected $fillable = ['name', 'workload', 'teaching_id'];
 
     protected $casts = [
         'created_at' => 'datetime:d/m/Y H:m:s',
@@ -27,4 +27,13 @@ class Course extends Model
         return $this->hasMany(Grid::class);
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($course) {
+            if (auth()->check())
+                $course->user_id = auth()->id();
+        });
+    }
 }
