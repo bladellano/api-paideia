@@ -29,6 +29,14 @@ Route::post('auth/me', [AuthController::class, 'me']);
 /** @todo VERIFICAR PORQUE NAO FUNCIONA DENTRO DO MIDDLEWARE */
 Route::get('reports/general-report-of-students', [ReportController::class, 'generalReportOfStudents']);
 
+/** Documentos */
+Route::prefix('documents')->group(function () {
+    Route::post('/{student}/store-document', [DocumentController::class, 'storeDocument']);
+    Route::get('/storage/{folder}/{filename}', [DocumentController::class, 'verifyBlobDocumentPDF']);
+    Route::get('/{folder}/{filename}/remove', [DocumentController::class, 'destroy']);
+    Route::get('/has-document/{code}', [DocumentController::class, 'hasDocument']);
+});
+
 /** Middleware */
 Route::group(['middleware' => ['apiJwt']], function () {
     //add rotas para proteger
@@ -67,12 +75,4 @@ Route::group(['middleware' => ['apiJwt']], function () {
     Route::get('/grids/get-grid-template/{grid}', [GridController::class, 'getGridTemplate']);
     Route::get('/grids/remove-template-from-grid/{grid}', [GridController::class, 'removeTemplatesFromGrid']);
 
-    /** Documentos */
-    Route::prefix('documents')->group(function () {
-        Route::post('/{student}/store-document', [DocumentController::class, 'storeDocument']);
-        Route::get('/storage/{folder}/{filename}', [DocumentController::class, 'verifyBlobDocumentPDF']);
-        Route::get('/{folder}/{filename}/remove', [DocumentController::class, 'destroy']);
-        Route::get('/has-document/{code}', [DocumentController::class, 'hasDocument']);
-    });
-    
 });
