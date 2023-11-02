@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Stage;
 use Illuminate\Http\Request;
 use App\Http\Requests\StageRequest;
+use App\Http\Requests\StageRequestUpdate;
 use App\Services\StageService;
 use Illuminate\Http\Response;
 
@@ -37,7 +38,7 @@ class StageController extends Controller
         return $this->service->find($stage->id);
     }
 
-    public function update(StageRequest $request, Stage $stage)
+    public function update(StageRequestUpdate $request, Stage $stage)
     {
         try {
             $data = $this->service->update($stage->id, $request->all());
