@@ -27,6 +27,7 @@ class StudentService
     {
         $student = $this->repository->find($id);
         $student->teams;
+        $student->documents;
         return [$student];
     }
 

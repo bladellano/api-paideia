@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use App\Models\Document;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -26,7 +27,8 @@ class DocumentController extends Controller
     public function storeDocument(Request $request, Student $student)
     {
         $file = $request->file('pdf');
-        $filePath = Storage::putFileAs($request->input('folder'), $file, "{$student->cpf}_{$request->input('document_name')}.pdf");
+        $teamName = strtoupper(Str::slug($request->input('team')));
+        $filePath = Storage::putFileAs($request->input('folder'), $file, "{$student->cpf}_{$teamName}_{$request->input('document_name')}.pdf");
 
         if(Storage::exists($filePath)) {
 
