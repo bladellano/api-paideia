@@ -28,7 +28,8 @@
     <div class="container">
         <h1>Olá, sou o(a) {{ $data['nome'] }}!</h1>
 
-        <p><b>Escola:</b> {{ $data['escola'] }}</p>
+        <p><b>E-mail:</b> {{ $data['e_mail'] }}</p>
+        <p><b>Duvida:</b> {{ $data['doubt'] }}</p>
         <p><b>WhatApp:</b> {{ $data['whatsapp'] }}</p>
 
         <p>Atenciosamente,</p>
