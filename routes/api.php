@@ -15,7 +15,8 @@ use App\Http\Controllers\{
     DisciplineController,
     GridTemplateController,
     ReportController,
-    MailController
+    MailController,
+    SchoolGradeController
 };
 
 Route::get('send-mail', [MailController::class, 'index']);
@@ -74,5 +75,9 @@ Route::group(['middleware' => ['apiJwt']], function () {
     Route::get('/grids/{team}/get-full-grid/', [GridController::class, 'getFullGrid']);
     Route::get('/grids/get-grid-template/{grid}', [GridController::class, 'getGridTemplate']);
     Route::get('/grids/remove-template-from-grid/{grid}', [GridController::class, 'removeTemplatesFromGrid']);
+
+    /** Notas */
+    Route::resource('grades', SchoolGradeController::class);
+    Route::get('/grades/{studentId}/get-grade-by-student', [SchoolGradeController::class, 'getGradeByStudent']);
 
 });
