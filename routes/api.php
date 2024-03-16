@@ -16,7 +16,8 @@ use App\Http\Controllers\{
     GridTemplateController,
     ReportController,
     MailController,
-    SchoolGradeController
+    SchoolGradeController,
+    TextDocumentController
 };
 
 Route::get('send-mail', [MailController::class, 'index']);
@@ -79,5 +80,8 @@ Route::group(['middleware' => ['apiJwt']], function () {
     /** Notas */
     Route::resource('grades', SchoolGradeController::class);
     Route::get('/grades/{studentId}/get-grade-by-student', [SchoolGradeController::class, 'getGradeByStudent']);
+
+    /** Texto de Documentos */
+    Route::resource('text-documents', TextDocumentController::class);
 
 });
