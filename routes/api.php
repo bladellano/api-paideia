@@ -13,10 +13,14 @@ use App\Http\Controllers\{
     DocumentController,
     TeachingController,
     DisciplineController,
+    FinancialController,
     GridTemplateController,
     ReportController,
     MailController,
+    PaymentTypeController,
+    RegistrationController,
     SchoolGradeController,
+    ServiceTypeController,
     TextDocumentController
 };
 
@@ -83,5 +87,17 @@ Route::group(['middleware' => ['apiJwt']], function () {
 
     /** Texto de Documentos */
     Route::resource('text-documents', TextDocumentController::class);
+    
+    /** Matriculas */
+    Route::apiResource('registrations', RegistrationController::class);
+
+    /** Financeiro */
+    Route::apiResource('financials', FinancialController::class);
+
+    /** Forma de Pagamento */
+    Route::apiResource('payment-types', PaymentTypeController::class);
+
+    /** Tipo de Serviço */
+    Route::apiResource('service-types', ServiceTypeController::class);
 
 });

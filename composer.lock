@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1ba4ec62f0bfe95b61854c10bb29a5f2",
+    "content-hash": "d5de315de5a523551c0372cf3243aeaa",
     "packages": [
         {
             "name": "brick/math",
@@ -1836,6 +1836,54 @@
                 }
             ],
             "time": "2022-04-17T13:12:02+00:00"
+        },
+        {
+            "name": "misterioso013/cpf",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/misterioso013/cpf.git",
+                "reference": "7c5cc643130b57db8b9738aa78a49b41b6e3e5bf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/misterioso013/cpf/zipball/7c5cc643130b57db8b9738aa78a49b41b6e3e5bf",
+                "reference": "7c5cc643130b57db8b9738aa78a49b41b6e3e5bf",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Misterioso013\\Tools\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rosiel Victor",
+                    "email": "ola@devsonhador.com.br",
+                    "homepage": "https://helpdevelop.top",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Simples Gerador e Validador de CPF PHP",
+            "homepage": "https://github.com/misterioso013/cpf",
+            "keywords": [
+                "CFP Generator",
+                "CPF Validate",
+                "cpf"
+            ],
+            "support": {
+                "issues": "https://github.com/misterioso013/cpf/issues",
+                "source": "https://github.com/misterioso013/cpf/tree/1.0.0"
+            },
+            "time": "2022-03-22T13:08:15+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -8258,5 +8306,5 @@
         "php": "^8.0.2"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
