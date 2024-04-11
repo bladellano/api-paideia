@@ -27,4 +27,13 @@ class Student extends Model
     {
         return $this->hasMany(Document::class, 'student_id');
     }
+
+    public function registrations()
+    {
+        return $this->hasMany(Registration::class, 'student_id')
+            ->with('team:id,name')
+            ->with('financials')
+            ->with('user:id,name');
+    }
+      
 }

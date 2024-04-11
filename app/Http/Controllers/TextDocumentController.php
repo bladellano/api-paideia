@@ -19,7 +19,7 @@ class TextDocumentController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
@@ -27,6 +27,12 @@ class TextDocumentController extends Controller
         return $this->repository->getAll($request, 'teaching');
     }
 
+    /**
+     * Show
+     *
+     * @param TextDocument $textDocument
+     * @return void
+     */
     public function show(TextDocument $textDocument)
     {
         return $textDocument;

@@ -12,6 +12,13 @@ abstract class AbstractRepository
         $this->model = $model;
     }
 
+    /**
+     * Obter todos os itens com relacionamentos opcionais com base nos critérios da requisição.
+     *
+     * @param mixed $request O objeto de requisição contendo dados de busca e paginação.
+     * @param array $with Um array de relacionamentos. Ex.: `user`.
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
     public function getAll($request, $with = [])
     {
         $query = $this->model::query();

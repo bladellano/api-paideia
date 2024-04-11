@@ -16,7 +16,7 @@ class DocumentController extends Controller
         if (file_exists($path)):
             return response()->file($path, ['Content-Type' => 'application/pdf']);
         else:
-            return response()->json(['error'=>true, 'message'=> 'Falha ao retornar um blob pdf'], 404);
+            return response()->json(['error'=> true, 'message'=> 'Falha ao retornar um blob pdf'], 404);
         endif;
     }
     /**
@@ -27,8 +27,23 @@ class DocumentController extends Controller
     public function storeDocument(Request $request, Student $student)
     {
         $file = $request->file('pdf');
-        $teamName = strtoupper(Str::slug($request->input('team')));
-        $filePath = Storage::putFileAs($request->input('folder'), $file, "{$student->cpf}_{$teamName}_{$request->input('document_name')}.pdf");
+
+        $partials = [];
+
+        if(!empty($request->input('registration')))
+            $partials[] = $request->input('registration');
+
+        if(true)
+            $partials[] = $student->cpf;
+
+        if(!empty($request->input('team')))
+            $partials[] = strtoupper(Str::slug($request->input('team')));
+
+        if(!empty($request->input('document_name')))
+            $partials[] = strtoupper(Str::slug($request->input('document_name'))) . ".pdf";
+
+        $joinNames = implode('_', $partials);
+        $filePath = Storage::putFileAs($request->input('folder'), $file, $joinNames);
 
         if(Storage::exists($filePath)) {
 
@@ -39,9 +54,9 @@ class DocumentController extends Controller
                 'student_id' => $student->id
             ]);
 
-            return response()->json(['data'=> $filePath, 'message' => 'Registro criado com sucesso!'], 201);
+            return response()->json(['data' => $filePath, 'message' => 'Registro criado com sucesso!'], 201);
         } else {
-            return response()->json(['error'=>true, 'message'=> 'Falha ao criar pdf '], 500);
+            return response()->json(['error' => true, 'message' => 'Falha ao criar pdf'], 500);
         }
     }
 
@@ -71,7 +86,7 @@ class DocumentController extends Controller
         if(count($record)) {
             return response()->json($record);
         } else {
-            return response()->json(['error'=> true,'message'=> 'Não foi encontrado nenhum documento válido com este código.'], 404);
+            return response()->json(['error' => true, 'message' => 'Não foi encontrado nenhum documento válido com este código.'], 404);
         }
     }
 

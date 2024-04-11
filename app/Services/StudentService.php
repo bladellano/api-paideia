@@ -28,6 +28,8 @@ class StudentService
         $student = $this->repository->find($id);
         $student->teams;
         $student->documents;
+        $student->registrations;
+        $student->user;
         return [$student];
     }
 
