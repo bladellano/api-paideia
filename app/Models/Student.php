@@ -35,5 +35,9 @@ class Student extends Model
             ->with('financials')
             ->with('user:id,name');
     }
-      
+
+    public function books()
+    {
+        return $this->hasMany(Book::class, 'student_id');
+    }
 }

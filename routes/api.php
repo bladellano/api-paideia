@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
     AuthController,
+    BookController,
     GridController,
     PoloController,
     TeamController,
@@ -100,4 +101,6 @@ Route::group(['middleware' => ['apiJwt']], function () {
     /** Tipo de Serviço */
     Route::apiResource('service-types', ServiceTypeController::class);
 
+    /** Livro */
+    Route::apiResource('books', BookController::class);
 });

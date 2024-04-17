@@ -30,6 +30,7 @@ class StudentService
         $student->documents;
         $student->registrations;
         $student->user;
+        $student->books;
         return [$student];
     }
 
