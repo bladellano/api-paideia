@@ -14,6 +14,7 @@ use App\Http\Controllers\{
     DocumentController,
     TeachingController,
     DisciplineController,
+    ExportController,
     FinancialController,
     GridTemplateController,
     ReportController,
@@ -43,6 +44,10 @@ Route::prefix('documents')->group(function () {
     Route::get('/{folder}/{filename}/remove', [DocumentController::class, 'destroy']);
     Route::get('/has-document/{code}', [DocumentController::class, 'hasDocument']);
 });
+
+/** Exportacao */
+//! FOCO
+Route::get('exports/class-diary', [ExportController::class, 'classDiary']);
 
 /** Middleware */
 Route::group(['middleware' => ['apiJwt']], function () {
@@ -88,7 +93,7 @@ Route::group(['middleware' => ['apiJwt']], function () {
 
     /** Texto de Documentos */
     Route::resource('text-documents', TextDocumentController::class);
-    
+
     /** Matriculas */
     Route::apiResource('registrations', RegistrationController::class);
 
