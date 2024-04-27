@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use Carbon\Carbon;
+use App\Models\Team;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\BeforeSheet;
@@ -65,55 +66,18 @@ class ClassDiaryPerDisciplineSheet implements FromCollection, WithMapping, WithE
     public function collection()
     {
 
-        $sql = "
-            SELECT 
-                LPAD(r.id, 6, '0') AS registration,
-                s.name AS student,
-                t.name AS team,
-                g.name AS grid,
-                __gt.course,
-                __gt.teaching
-            FROM 
-                registrations r
-            INNER JOIN 
-                teams t ON t.id = r.team_id
-            INNER JOIN 
-                students s ON s.id = r.student_id
-            INNER JOIN 
-                grids g ON g.id = t.grid_id
-            INNER JOIN (
-                SELECT 
-                    gt.grid_id, 
-                    gt.course_id, 
-                    c.name AS course, 
-                    teaching.name AS teaching 
-                FROM 
-                    grid_templates gt
-                INNER JOIN 
-                    courses c ON c.id = gt.course_id
-                INNER JOIN 
-                    teachings teaching ON teaching.id = c.teaching_id
-                GROUP BY 
-                    gt.grid_id, 
-                    gt.course_id, 
-                    c.name,
-                    teaching.name
-            ) __gt ON __gt.grid_id = t.grid_id
-            WHERE 
-                r.team_id = " . $this->teamId . "
-            ORDER BY 
-                s.name ASC";
+        $team = Team::findOrFail($this->teamId);
+        $students = $team->getStudentsByTeam($this->teamId);
 
-        $records = \DB::select($sql);
+        $this->course = $students[0]->course;
+        $this->team = $students[0]->team;
+        $this->teaching = $students[0]->teaching;
 
-        $this->course = $records[0]->course;
-        $this->team = $records[0]->team;
-        $this->teaching = $records[0]->teaching;
+        $c = collect($students);
 
-        $collection = collect($records);
-        $this->qtdStudents = $collection->count();
+        $this->qtdStudents = $c->count();
 
-        return $collection;
+        return $c;
     }
 
     public function map($item): array
@@ -187,7 +151,6 @@ class ClassDiaryPerDisciplineSheet implements FromCollection, WithMapping, WithE
         return [
             BeforeSheet::class => function (BeforeSheet $event) {
 
-            
                 /** SUPER HEADER */
                 $event->sheet->mergeCells('A1:B4', Worksheet::MERGE_CELL_CONTENT_MERGE);
 
@@ -282,10 +245,11 @@ class ClassDiaryPerDisciplineSheet implements FromCollection, WithMapping, WithE
             },
             AfterSheet::class => function (AfterSheet $event) use ($aStylesHeader, $stylesAllCells, $aOnlyCenter) {
 
+                // Configuracao do papel
                 $event->sheet
-                ->getPageSetup()
-                ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE)
-                ->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+                    ->getPageSetup()
+                    ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE)
+                    ->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
 
                 $event->sheet->getPageMargins()->setTop(0.10);
                 $event->sheet->getPageMargins()->setRight(0.10);
@@ -295,6 +259,8 @@ class ClassDiaryPerDisciplineSheet implements FromCollection, WithMapping, WithE
                 $event->sheet->getPageMargins()->setFooter(0.10);
 
                 $event->sheet->getPageSetup()->setFitToPage(true);
+
+                // Fim configuracao do papel.
 
                 $event->sheet->setCellValue('O6', mb_strtoupper($this->course));
                 $event->sheet->mergeCells('O6:V6', Worksheet::MERGE_CELL_CONTENT_MERGE);

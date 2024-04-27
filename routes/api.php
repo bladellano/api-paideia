@@ -46,8 +46,8 @@ Route::prefix('documents')->group(function () {
 });
 
 /** Exportacao */
-//! FOCO
 Route::get('exports/class-diary', [ExportController::class, 'classDiary']);
+Route::get('exports/students-per-class', [ExportController::class, 'studentsPerClass']);
 
 /** Middleware */
 Route::group(['middleware' => ['apiJwt']], function () {
