@@ -53,9 +53,9 @@ class FinancialController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Financial $financial)
     {
-        //
+        return response()->json($financial);
     }
 
     /**
@@ -65,9 +65,30 @@ class FinancialController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+
+
+    public function update(Request $request, Financial $financial)
     {
-        //
+
+        try {
+
+            $validatedData = $request->validate([
+                'registration_id' => 'nullable|int',
+                'service_type_id' => 'required',
+                'value' => 'required',
+                'due_date' => 'required',
+                'paid' => 'required|boolean',
+                'observations' => 'nullable|string',
+                'gateway_response' => 'nullable|string',
+                'payment_type' => 'required|int',
+            ]);
+
+            $updated = $financial->update($validatedData);
+
+            return response()->json(['data' => $updated, 'message' => 'Registro atualizado com sucesso!'], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json(['error' => true, 'message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
