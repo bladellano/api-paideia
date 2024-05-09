@@ -33,6 +33,7 @@ class FinancialController extends Controller
                 'service_type_id' => 'required',
                 'value' => 'required',
                 'due_date' => 'required',
+                'pay_day' => 'nullable',
                 'paid' => 'required|boolean',
                 'observations' => 'nullable|string',
                 'gateway_response' => 'nullable|string',
@@ -62,11 +63,9 @@ class FinancialController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param Financial $financial
      * @return \Illuminate\Http\Response
      */
-
-
     public function update(Request $request, Financial $financial)
     {
 
@@ -77,6 +76,7 @@ class FinancialController extends Controller
                 'service_type_id' => 'required',
                 'value' => 'required',
                 'due_date' => 'required',
+                'pay_day' => 'nullable',
                 'paid' => 'required|boolean',
                 'observations' => 'nullable|string',
                 'gateway_response' => 'nullable|string',

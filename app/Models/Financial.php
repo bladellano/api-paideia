@@ -14,6 +14,7 @@ class Financial extends Model
         'service_type_id',
         'value',
         'due_date',
+        'pay_day',
         'paid',
         'observations',
         'gateway_response',
@@ -54,6 +55,7 @@ class Financial extends Model
     protected $casts = [
         'created_at' => 'datetime:d/m/Y H:m:s',
         'due_date' => 'datetime:d/m/Y',
+        'pay_day' => 'datetime:d/m/Y',
     ];
     
 }
