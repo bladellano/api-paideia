@@ -20,7 +20,7 @@ class StudentController extends Controller
 
     public function index(Request $request)
     {
-        return $this->service->getAll($request,['teams']);
+        return $this->service->getAll($request, ['registrations']);
     }
 
     public function store(StudentRequest $request)
