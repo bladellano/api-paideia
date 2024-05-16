@@ -56,6 +56,7 @@ class FinancialController extends Controller
      */
     public function show(Financial $financial)
     {
+        $financial->registration;
         return response()->json($financial);
     }
 

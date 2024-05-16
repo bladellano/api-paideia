@@ -24,7 +24,8 @@ class Financial extends Model
 
     public function registration()
     {
-        return $this->belongsTo(Registration::class);
+        return $this->belongsTo(Registration::class)
+        ->with('team:id,name');
     }
 
     public function serviceType()
