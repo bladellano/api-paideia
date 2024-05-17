@@ -54,7 +54,7 @@ class Team extends Model
         return array_column($disciplines, 'discipline');
     }
 
-    public function getStudentsByTeam($teamId)
+    public static function getStudentsByTeam($teamId)
     {
         $sql = "
             SELECT 

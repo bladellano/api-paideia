@@ -162,7 +162,7 @@ class ClassStudentsPerClass implements FromCollection, WithEvents, WithMapping, 
                     'fill' => [
                         'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
                         'startColor' => [
-                            'rgb' => 'EEEEEE', // Cor de fundo vermelha
+                            'rgb' => 'EEEEEE',
                         ],
                     ],
                 ]);
@@ -196,7 +196,7 @@ class ClassStudentsPerClass implements FromCollection, WithEvents, WithMapping, 
                     'fill' => [
                         'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
                         'startColor' => [
-                            'rgb' => 'EEEEEE', // Cor de fundo vermelha
+                            'rgb' => 'EEEEEE',
                         ],
                     ],
                 ]);

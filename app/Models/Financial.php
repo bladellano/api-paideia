@@ -25,6 +25,7 @@ class Financial extends Model
     public function registration()
     {
         return $this->belongsTo(Registration::class)
+        ->with('student:id,name')
         ->with('team:id,name');
     }
 
