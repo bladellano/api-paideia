@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Money\Money;
 use Carbon\Carbon;
 use App\Models\Team;
 use App\Models\Financial;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use NumberToWords\NumberToWords;
 use App\Exports\ClassDiaryExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ClassStudentsPerClass;
@@ -33,14 +35,31 @@ class ExportController extends Controller
         Carbon::setLocale('pt_BR');
 
         $financial->registration;
+        $financial->serviceType;
 
         $getCourse = Team::getStudentsByTeam($financial->registration->team->id);
 
         $financial->course = mb_strtoupper($getCourse[0]->course);
         $financial->currentDate = Carbon::now();
+        $financial->valueFormated =  number_format($financial->value, 2, ',', '.');;
+        $financial->inFull = $this->convertToWords($financial->value);
 
         $pdf = Pdf::loadView('export.receipt', compact('financial'));
 
         return $pdf->download('recibo.pdf');
+    }
+
+    private function convertToWords($amount)
+    {
+        $amountInCents = (int)($amount * 100);
+
+        $money = Money::BRL($amountInCents);
+        $numberToWords = new NumberToWords();
+
+        //? Cria o transformer para português
+        $currencyTransformer = $numberToWords->getCurrencyTransformer('pt_BR');
+        $amountInWords = $currencyTransformer->toWords($money->getAmount(), 'BRL');
+
+        return $amountInWords;
     }
 }

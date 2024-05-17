@@ -1,11 +1,11 @@
 
 <div style="text-align: center">
     <img src="{{public_path('/logo.png')}}" alt="LOGO - PAIDEIA" width="220px">
-    <h2>RECIBO DE PAGAMENTO</h2>
+    <h3>RECIBO DE PAGAMENTO</h3>
 
 </div>
 
-<p>Recebi(emos) de: <strong>{{ strtoupper($financial->registration->student->name) }}</strong> a importância de R$ {{ $financial->value }} (cento e cinquenta reais) referente a mensalidades de maio de 2023.</p>
+<p>Recebi(emos) de: <strong>{{ strtoupper($financial->registration->student->name) }}</strong> a importância de R$ {{ $financial->valueFormated }} ({{ $financial->inFull }}) referente a(o) {{ strtoupper($financial->serviceType->name) }} de {{ $financial->due_date->translatedFormat('d \d\e F \d\e Y') }}.</p>
 
 <p>{{ $financial->course }}</p>
 
@@ -14,3 +14,12 @@
 <p><strong>Obs: {{ $financial->observations }}</strong></p>
 
 <p>{{ ucfirst($financial->currentDate->translatedFormat('l, d \d\e F \d\e Y')) }}.</p>
+
+
+
+<div style="text-align: center">
+    <p>____________________________________________</p>
+    Paideia Educacional<br/>
+    CNPJ 32.599.936/0001-77
+
+</div>
