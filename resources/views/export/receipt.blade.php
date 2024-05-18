@@ -19,8 +19,6 @@
             
             <p>{{ ucfirst($financial->currentDate->translatedFormat('l, d \d\e F \d\e Y')) }}.</p>
             
-            
-            
             <div style="text-align: center">
                 <p>____________________________________________</p>
                 Paideia Educacional<br/>
