@@ -4,7 +4,7 @@
     <tr>
         <td border="1" style="border:1px solid #000; padding:10px">
             <div style="text-align: center">
-                <img src="{{public_path('/logo.png')}}" alt="LOGO - PAIDEIA" width="220px">
+                <img src="{{public_path('/logo.png')}}" alt="LOGO - PAIDEIA" width="180px">
                 <h3>RECIBO DE PAGAMENTO</h3>
             
             </div>
