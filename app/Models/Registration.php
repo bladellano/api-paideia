@@ -37,7 +37,9 @@ class Registration extends Model
         return $this->hasMany(Financial::class, 'registration_id')
             ->with('user:id,name')
             ->with('paymentType:id,name')
-            ->with('serviceType:id,name');
+            ->with('serviceType:id,name')
+            ->orderBy('service_type_id', 'asc')
+            ->orderBy('due_date', 'asc');
     }
 
     protected static function boot()
