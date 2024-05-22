@@ -176,7 +176,7 @@ class ClassStudentsPerClass implements FromCollection, WithEvents, WithMapping, 
                 $event->sheet->setCellValue('C1', "PAIDEIA EDUCACIONAL CURSOS\n E TREINAMENTOS LTDA.\n$this->team");
                 $event->sheet->mergeCells('C1:C2', Worksheet::MERGE_CELL_CONTENT_MERGE);
 
-                $event->sheet->setCellValue('D1', "RELAÇÃO DE ALUNOS POR TURMA\nTURMA: $this->team\nTURNO: -- \n{MES} - {DISCIPLINA}\n");
+                $event->sheet->setCellValue('D1', "RELAÇÃO DE ALUNOS POR TURMA\nTURMA: $this->team\n{MES} - {DISCIPLINA}\n");
                 $event->sheet->mergeCells('D1:D2', Worksheet::MERGE_CELL_CONTENT_MERGE);
 
                 $event->sheet->setCellValue('A3', mb_strtoupper($this->teaching));
