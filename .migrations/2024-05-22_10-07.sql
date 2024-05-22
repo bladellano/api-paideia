@@ -1,0 +1,16 @@
+-- PROBLEMAS COM CERTIFICADOS DUPLICADOS: REMOVER OS DUPLICADOS MANTENDO PELO MENOS UM.
+
+CREATE TEMPORARY TABLE temp_documents AS
+SELECT 
+    MIN(id) as id
+FROM documents
+WHERE type = 'CERTIFICATE'
+GROUP BY path, code, active, type, student_id;
+
+DELETE FROM documents
+WHERE type = 'CERTIFICATE'
+  AND id NOT IN (SELECT id FROM temp_documents);
+ 
+DROP TEMPORARY TABLE IF EXISTS temp_documents;
+
+
