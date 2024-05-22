@@ -40,6 +40,37 @@ class ClassDiaryPerDisciplineSheet implements FromCollection, WithMapping, WithE
     {
         return [
             'B' => 34,
+            'C' => 4,
+            'D' => 4,
+            'E' => 4,
+            'F' => 4,
+            'G' => 4,
+            'H' => 4,
+            'I' => 4,
+            'J' => 4,
+            'K' => 4,
+            'L' => 4,
+            'M' => 4,
+            'N' => 4,
+            'O' => 4,
+            'P' => 4,
+            'Q' => 4,
+            'R' => 4,
+            'S' => 4,
+            'T' => 4,
+            'U' => 4,
+            'V' => 4,
+            'W' => 4,
+            'X' => 4,
+            'Y' => 4,
+            'Z' => 4,
+            'AA' => 4,
+            'AB' => 4,
+            'AC' => 4,
+            'AD' => 4,
+            'AE' => 4,
+            'AF' => 4,
+            'AG' => 4,
         ];
     }
 
@@ -259,6 +290,9 @@ class ClassDiaryPerDisciplineSheet implements FromCollection, WithMapping, WithE
                 $event->sheet->getPageMargins()->setFooter(0.10);
 
                 $event->sheet->getPageSetup()->setFitToPage(true);
+
+                //? Ajusta a altura de determinada dimensao (linha).
+                $event->sheet->getRowDimension('6')->setRowHeight(35);
 
                 // Fim configuracao do papel.
 
