@@ -12,6 +12,7 @@ class Financial extends Model
     protected $fillable = [
         'registration_id',
         'service_type_id',
+        'quota',
         'value',
         'due_date',
         'pay_day',

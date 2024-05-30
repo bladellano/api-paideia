@@ -31,6 +31,7 @@ class FinancialController extends Controller
             $validatedData = $request->validate([
                 'registration_id' => 'required',
                 'service_type_id' => 'required',
+                'quota' => 'nullable|int',
                 'value' => 'required',
                 'due_date' => 'required',
                 'pay_day' => 'nullable',
@@ -69,12 +70,12 @@ class FinancialController extends Controller
      */
     public function update(Request $request, Financial $financial)
     {
-
         try {
 
             $validatedData = $request->validate([
                 'registration_id' => 'nullable|int',
                 'service_type_id' => 'required',
+                'quota' => 'nullable|int',
                 'value' => 'required',
                 'due_date' => 'required',
                 'pay_day' => 'nullable',
