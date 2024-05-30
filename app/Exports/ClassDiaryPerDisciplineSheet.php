@@ -39,6 +39,7 @@ class ClassDiaryPerDisciplineSheet implements FromCollection, WithMapping, WithE
     public function columnWidths(): array
     {
         return [
+            'A' => 4,
             'B' => 34,
             'C' => 4,
             'D' => 4,
@@ -71,6 +72,7 @@ class ClassDiaryPerDisciplineSheet implements FromCollection, WithMapping, WithE
             'AE' => 4,
             'AF' => 4,
             'AG' => 4,
+            'AH' => 4,
         ];
     }
 
@@ -78,7 +80,7 @@ class ClassDiaryPerDisciplineSheet implements FromCollection, WithMapping, WithE
     {
         $drawing = new Drawing();
         $drawing->setName('Logo');
-        $drawing->setDescription('This is my logo');
+        $drawing->setDescription('~~Paideia Educacional~~');
         $drawing->setPath(public_path('/logo.png'));
         $drawing->setHeight(74);
         $drawing->setCoordinates('B1');
@@ -306,7 +308,31 @@ class ClassDiaryPerDisciplineSheet implements FromCollection, WithMapping, WithE
                 $event->sheet->mergeCells('AJ1:AL2', Worksheet::MERGE_CELL_CONTENT_MERGE);
 
                 /** APLICAÇÃO DOS ESTILOS */
-                $event->sheet->getStyle('A1:AL9')->applyFromArray($aStylesHeader);
+                $event->sheet->getStyle('A1:AL9')->applyFromArray($aStylesHeader); //! FOCO
+
+                // Colorindo colunas de ORDEM.
+                $startOrder = 10; /** Posicao do numero 1. */
+                $goToBottom = $startOrder + $this->qtdStudents + 6;
+
+                for ($i=$startOrder; $i < $goToBottom ; $i++) { 
+                    $event->sheet->getStyle("A{$i}:A{$i}")->applyFromArray([
+                        'fill' => [
+                            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                            'startColor' => [
+                                'rgb' => 'FFF2CC',
+                            ],
+                        ],
+                    ]);
+
+                    $event->sheet->getStyle("AH{$i}:AH{$i}")->applyFromArray([
+                        'fill' => [
+                            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                            'startColor' => [
+                                'rgb' => 'FFF2CC',
+                            ],
+                        ],
+                    ]);
+                }
 
                 $row = $this->qtdStudents + $this->headerHeight + 6; // + 6 Linhas para baixo.
 
@@ -325,9 +351,41 @@ class ClassDiaryPerDisciplineSheet implements FromCollection, WithMapping, WithE
                 $event->sheet->getStyle("A1:AL{$row}")->applyFromArray($stylesAllCells);
                 $event->sheet->getStyle("A{$row}:AL{$row}")->applyFromArray($aStylesHeader);
 
-                // ASSINATURAS
+                $linesForStudentNames = $row + 1;
+              
+                // ASSINATURAS...
                 $row += 10; // + 10 Linhas para baixo.
 
+                $lastLineBeforeSignature = $row - 1;
+
+                for ($i=$linesForStudentNames; $i <= $lastLineBeforeSignature; $i++) {
+                    // COMPETÊNCIAS
+                    $event->sheet->mergeCells("A{$i}:B{$i}", Worksheet::MERGE_CELL_CONTENT_MERGE);
+                    // DATA
+                    $event->sheet->mergeCells("C{$i}:G{$i}", Worksheet::MERGE_CELL_CONTENT_MERGE);
+                    // REGISTRO DO PROCESSO EDUCATIVO
+                    $event->sheet->mergeCells("H{$i}:W{$i}", Worksheet::MERGE_CELL_CONTENT_MERGE);
+                    // REGISTRO DO PROCESSO EDUCATIVO (DETALHAMENTO)
+                    $event->sheet->mergeCells("X{$i}:AL{$i}", Worksheet::MERGE_CELL_CONTENT_MERGE);
+                }
+
+                $event->sheet->getStyle("A{$linesForStudentNames}:AL{$lastLineBeforeSignature}")->applyFromArray($stylesAllCells);
+
+                $linesForStudentNames = --$linesForStudentNames;
+
+                // Colorindo
+                $event->sheet->getStyle("A{$linesForStudentNames}:AL{$linesForStudentNames}")->applyFromArray([
+                    'fill' => [
+                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                        'startColor' => [
+                            'rgb' => 'E2F0D9',
+                        ],
+                    ],
+                ]);
+             
+                // END.
+
+                // ...ASSINATURAS
                 $event->sheet->setCellValue("A{$row}", '______/______/______');
                 $event->sheet->mergeCells("A{$row}:H{$row}", Worksheet::MERGE_CELL_CONTENT_MERGE);
 
