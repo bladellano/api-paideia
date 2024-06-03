@@ -33,7 +33,7 @@ class ReportController extends Controller
             p.responsible,
             g.name as grid
             FROM students s
-                LEFT JOIN (SELECT * FROM student_teams WHERE registered = 1) ST ON ST.student_id = s.id
+                LEFT JOIN (SELECT * FROM registrations WHERE ativo) ST ON ST.student_id = s.id
                 LEFT JOIN teams t ON t.id = ST.team_id
                 LEFT JOIN polos p ON p.id = t.polo_id
                 LEFT JOIN grids g ON g.id = t.grid_id ';

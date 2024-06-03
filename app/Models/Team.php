@@ -12,11 +12,6 @@ class Team extends Model
 
     protected $fillable = ['name', 'start_date', 'end_date', 'polo_id', 'course_id', 'grid_id'];
 
-    public function students()
-    {
-        return $this->belongsToMany(Student::class, 'student_teams');
-    }
-
     public function grid()
     {
         return $this->belongsTo(Grid::class);

@@ -16,13 +16,6 @@ class Student extends Model
         'birth_date' => 'datetime:d/m/Y',
     ];
 
-    public function teams()
-    {
-        return $this->belongsToMany(Team::class, 'student_teams')
-            ->withTimestamps()
-            ->wherePivot('deleted_at', null);
-    }
-
     public function documents()
     {
         return $this->hasMany(Document::class, 'student_id');
