@@ -7,6 +7,7 @@ use App\Models\Document;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Response;
 
 class DocumentController extends Controller
 {
@@ -87,6 +88,18 @@ class DocumentController extends Controller
             return response()->json($record);
         } else {
             return response()->json(['error' => true, 'message' => 'Não foi encontrado nenhum documento válido com este código.'], 404);
+        }
+    }
+
+    public function update(Request $request, Document $document)
+    {
+        try {
+            $document->student_id = $request->student_id;
+            $document->save();
+
+            return response()->json(['data' => $document, 'message' => 'Registro atualizado com sucesso!']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => true, 'message'=> $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 

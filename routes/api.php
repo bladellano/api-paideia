@@ -43,6 +43,7 @@ Route::prefix('documents')->group(function () {
     Route::get('/storage/{folder}/{filename}', [DocumentController::class, 'verifyBlobDocumentPDF']);
     Route::get('/{folder}/{filename}/remove', [DocumentController::class, 'destroy']);
     Route::get('/has-document/{code}', [DocumentController::class, 'hasDocument']);
+    Route::put('/{document}', [DocumentController::class, 'update']);
 });
 
 /** Exportacao */
