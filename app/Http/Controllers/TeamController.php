@@ -21,7 +21,7 @@ class TeamController extends Controller
 
     public function index(Request $request)
     {
-        return $this->service->getAll($request, ['grid','polo']);
+        return $this->service->getAll($request, ['grid','polo','registrations']);
     }
 
     public function store(TeamRequest $request)
