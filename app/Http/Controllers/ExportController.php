@@ -6,12 +6,13 @@ use Money\Money;
 use Carbon\Carbon;
 use App\Models\Team;
 use App\Models\Financial;
-use App\Exports\ClassDiaryExport;
-use App\Exports\ClassStudentsPerClass;
+use App\Models\SchoolGrade;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use NumberToWords\NumberToWords;
+use App\Exports\ClassDiaryExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ClassStudentsPerClass;
 
 class ExportController extends Controller
 {
@@ -19,8 +20,9 @@ class ExportController extends Controller
     {
         $team = Team::findOrFail($request->team_id);
         $disciplines = $team->getDisciplines($request->team_id);
+        $notes = SchoolGrade::where('team_id', $request->team_id)->get();
 
-        return Excel::download(new ClassDiaryExport($request->team_id, $disciplines), __FUNCTION__ . "_" . \Str::random(10), \Maatwebsite\Excel\Excel::XLSX);
+        return Excel::download(new ClassDiaryExport($request->team_id, $disciplines, $notes), __FUNCTION__ . "_" . \Str::random(10), \Maatwebsite\Excel\Excel::XLSX);
     }
 
     public function studentsPerClass(Request $request)

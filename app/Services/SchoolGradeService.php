@@ -50,6 +50,8 @@ class SchoolGradeService
                             'stage_id' => $stageId,
                             'discipline_id' => $disciplineId,
                             'team_id' => $turmaId,
+                            'created_at' => date('Y-m-d H:m:s'),
+                            'user_id' => auth()->check() ?  auth()->id() : NULL
                         ];
                     }
                 }

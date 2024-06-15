@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\SchoolGrade;
 use Carbon\Carbon;
 use App\Models\Team;
 use Maatwebsite\Excel\Events\AfterSheet;
@@ -29,11 +30,13 @@ class ClassDiaryPerDisciplineSheet implements FromCollection, WithMapping, WithE
     protected $team;
 
     protected $discipline;
+    protected $notes;
 
-    public function __construct($teamId, $disciplineName)
+    public function __construct($teamId, $aDiscipline, $notes)
     {
         $this->teamId = $teamId;
-        $this->discipline = $disciplineName;
+        $this->discipline = $aDiscipline;
+        $this->notes = $notes;
     }
 
     public function columnWidths(): array
@@ -90,7 +93,7 @@ class ClassDiaryPerDisciplineSheet implements FromCollection, WithMapping, WithE
 
     public function title(): string
     {
-        return mb_strtoupper($this->discipline);
+        return mb_strtoupper($this->discipline['discipline']);
     }
 
     /**
@@ -106,8 +109,23 @@ class ClassDiaryPerDisciplineSheet implements FromCollection, WithMapping, WithE
         $this->team = $students[0]->team;
         $this->teaching = $students[0]->teaching;
 
-        $c = collect($students);
+        $this->discipline['id'];
+        $this->discipline['discipline'];
 
+        $students = array_map(function($item){
+
+            $item->notas = SchoolGrade::select('grade')
+            ->where('team_id', $item->team_id)
+            ->where('discipline_id', $this->discipline['id'])
+            ->where('student_id', $item->student_id)
+            ->get()->toArray();
+            
+            return $item;
+
+        }, $students);
+
+        $c = collect($students);
+        
         $this->qtdStudents = $c->count();
 
         return $c;
@@ -153,6 +171,8 @@ class ClassDiaryPerDisciplineSheet implements FromCollection, WithMapping, WithE
             '',
             '',
             $this->index, // N°
+            $item->notas[0]['grade'] ?? '', // Etap 1°
+            $item->notas[1]['grade'] ?? '', // Etap 2°
         ];
     }
 
@@ -304,7 +324,7 @@ class ClassDiaryPerDisciplineSheet implements FromCollection, WithMapping, WithE
                 $event->sheet->setCellValue('W6', mb_strtoupper($this->team));
                 $event->sheet->mergeCells('W6:Z6', Worksheet::MERGE_CELL_CONTENT_MERGE);
 
-                $event->sheet->setCellValue('AJ1', mb_strtoupper($this->discipline));
+                $event->sheet->setCellValue('AJ1', mb_strtoupper($this->discipline['discipline']));
                 $event->sheet->mergeCells('AJ1:AL2', Worksheet::MERGE_CELL_CONTENT_MERGE);
 
                 /** APLICAÇÃO DOS ESTILOS */

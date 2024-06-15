@@ -59,6 +59,12 @@ class TeamController extends Controller
         }
     }
 
+    public function studentsByTeam(Team $team)
+    {
+        $team->registrations;
+        return response()->json($team);
+    }
+
     public function registerStudent(StudentTeamRequest $request)
     {
         try {

@@ -9,8 +9,7 @@ class BuildFullGrid
 
     public function execute(Team $team): array
     {
-
-        $rawData = \DB::select('SELECT
+        $rawData = \DB::select('SELECT \''. $team->name .'\' as team_name,
         gt.id,
         g.id as grid_id,
         g.name as grid_name,
@@ -38,6 +37,7 @@ class BuildFullGrid
             return response()->json([]);
 
         $grid_name = $rawData[0]['grid_name'];
+        $team_name = $rawData[0]['team_name'];
         $course_name = $rawData[0]['course_name'];
         $totalWorkload = array_column($rawData, 'workload');
         $totalWorkload = array_sum($totalWorkload);
@@ -95,6 +95,7 @@ class BuildFullGrid
         $stagesNumbers =  array_map(fn ($item) => (int) preg_replace('/[^0-9]/','',$item), $arrStages);
         sort($stagesNumbers);
         return [
+            'team_name' => $team_name,
             'grid_name' => $grid_name,
             'course_name' => $course_name,
             'total_stage' => $maxCount,

@@ -22,6 +22,14 @@ class Team extends Model
         return $this->belongsTo(Polo::class);
     }
 
+    public function registrations()
+    {
+        return $this->hasMany(Registration::class)
+        ->with('student:id,name')
+        ->join('students', 'registrations.student_id', '=', 'students.id')
+        ->orderBy('students.name');
+    }
+
     protected $casts = [
         'start_date' => 'date:d/m/Y',
         'end_date' => 'date:d/m/Y',
@@ -35,18 +43,18 @@ class Team extends Model
 
     public function getDisciplines($teamId)
     {
-        $result = $this->select('disciplines.name AS discipline')
+        $result = $this->select('disciplines.id AS id', 'disciplines.name AS discipline')
             ->join('grids', 'grids.id', '=', 'teams.grid_id')
             ->join('grid_templates', 'grid_templates.grid_id', '=', 'grids.id')
             ->join('disciplines', 'disciplines.id', '=', 'grid_templates.discipline_id')
             ->where('teams.id', $teamId)
-            ->groupBy('disciplines.name')
+            ->groupBy('disciplines.id', 'disciplines.name')
             ->orderBy('disciplines.name', 'asc')
             ->get();
 
         $disciplines = $result->toArray();
 
-        return array_column($disciplines, 'discipline');
+        return $disciplines;
     }
 
     public static function getStudentsByTeam($teamId)
@@ -54,8 +62,10 @@ class Team extends Model
         $sql = "
             SELECT 
                 LPAD(r.id, 6, '0') AS registration,
+                s.id AS student_id,
                 s.name AS student,
                 t.name AS team,
+                t.id AS team_id,
                 g.name AS grid,
                 __gt.course,
                 __gt.teaching
