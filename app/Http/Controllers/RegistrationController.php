@@ -52,6 +52,7 @@ class RegistrationController extends Controller
 
         $register = Registration::where('id', $id);
         $register->with('financials');
+        $register->with('team');
 
         return $register->get();
     }

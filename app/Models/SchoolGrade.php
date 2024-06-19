@@ -15,6 +15,7 @@ class SchoolGrade extends Model
         'stage_id',
         'team_id',
         'grade',
+        'user_id',
     ];
 
     /**

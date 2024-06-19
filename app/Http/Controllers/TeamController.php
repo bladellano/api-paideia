@@ -65,6 +65,18 @@ class TeamController extends Controller
         return response()->json($team);
     }
 
+    public function disciplinesByTeam(Team $team)
+    {
+        $disciplines = $team->getDisciplines($team->id);
+        return response()->json($disciplines);
+    }
+
+    public function gradesByTeam(Team $team)
+    {
+        $team->grades;
+        return response()->json($team->grades);
+    }
+
     public function registerStudent(StudentTeamRequest $request)
     {
         try {

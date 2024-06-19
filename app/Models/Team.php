@@ -22,6 +22,11 @@ class Team extends Model
         return $this->belongsTo(Polo::class);
     }
 
+    public function grades()
+    {
+        return $this->hasMany(SchoolGrade::class);
+    }
+
     public function registrations()
     {
         return $this->hasMany(Registration::class)

@@ -3,11 +3,12 @@
 namespace App\Services;
 
 use App\Models\Team;
+use Illuminate\Http\Request;
 
 class BuildFullGrid
 {
 
-    public function execute(Team $team): array
+    public function execute(Team $team, Request $request): array
     {
         $rawData = \DB::select('SELECT \''. $team->name .'\' as team_name,
         gt.id,
@@ -57,6 +58,9 @@ class BuildFullGrid
             return $acc;
         }, []);
 
+        if(isset($request->discipline_id))
+            $result = self::filterArrayByDisciplineId($result, $request->discipline_id);
+
         $arrStages = [];
 
         foreach($result as $v)
@@ -103,5 +107,22 @@ class BuildFullGrid
             'list' => $result,
             'stagesNumbers' => $stagesNumbers,
         ];
+    }
+
+    private static function filterArrayByDisciplineId($array, $disciplineId) {
+        $filteredArray = [];
+    
+        foreach ($array as $disciplineName => $stages) {
+            foreach ($stages as $stageName => $details) {
+                if ($details['discipline_id'] == $disciplineId) {
+                    if (!isset($filteredArray[$disciplineName])) {
+                        $filteredArray[$disciplineName] = [];
+                    }
+                    $filteredArray[$disciplineName][$stageName] = $details;
+                }
+            }
+        }
+    
+        return $filteredArray;
     }
 }

@@ -19,15 +19,28 @@ class SchoolGradeService
     {
         $arLines = self::generateHistoryLines($request->all());
         
-        $teamId = $arLines[0]['team_id'];
-        $studentId = $arLines[0]['student_id'];
-        
-        SchoolGrade::where('student_id', $studentId)
-        ->where('team_id', $teamId)
-        ->delete();
-        
         try {
-            SchoolGrade::insert($arLines);
+
+            foreach($arLines as $note) {
+
+                $hasGrade = SchoolGrade::where('student_id', $note['student_id'])
+                ->where('team_id', $note['team_id'])
+                ->where('discipline_id', $note['discipline_id'])
+                ->where('stage_id', $note['stage_id'])
+                ->get()->first();
+    
+                if($hasGrade) {
+                    
+                    $updated = SchoolGrade::find($hasGrade->id);
+                    $updated->update($note);
+
+                } else {
+
+                    SchoolGrade::insert($note);
+
+                }
+    
+            }
             
             return ['total' => count($arLines)];
             

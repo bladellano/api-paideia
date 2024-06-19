@@ -92,9 +92,9 @@ class GridController extends Controller
     * @param Team $team
     * @return \Illuminate\Http\Respons
     */
-    public function getFullGrid(Team $team)
+    public function getFullGrid(Team $team, Request $request)
     {
-        $fullGrid = $this->buildFullGrid->execute($team);
+        $fullGrid = $this->buildFullGrid->execute($team, $request);
         return response()->json($fullGrid);
     }
 

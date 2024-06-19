@@ -77,6 +77,8 @@ Route::group(['middleware' => ['apiJwt']], function () {
     Route::resource('teams', TeamController::class);
     Route::post('/teams/register-student', [TeamController::class, 'registerStudent']);
     Route::get('/teams/{team}/students', [TeamController::class, 'studentsByTeam']);
+    Route::get('/teams/{team}/disciplines', [TeamController::class, 'disciplinesByTeam']);
+    Route::get('/teams/{team}/grades', [TeamController::class, 'gradesByTeam']);
 
     /** Grades Templates */
     Route::resource('grid-templates', GridTemplateController::class);
