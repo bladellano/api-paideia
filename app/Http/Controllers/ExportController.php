@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Money\Money;
 use Carbon\Carbon;
 use App\Models\Team;
+use App\Models\Student;
 use App\Models\Financial;
 use App\Models\SchoolGrade;
 use Illuminate\Http\Request;
@@ -49,6 +50,46 @@ class ExportController extends Controller
         $pdf = Pdf::loadView('export.receipt', compact('financial'));
 
         return $pdf->download('recibo.pdf');
+    }
+
+    private static function calculateTypeOfServices($types, $serviceTypeId) {
+        $total = 0;
+        foreach ($types as $type) {
+            if ($type['service_type_id'] == $serviceTypeId) 
+                $total += 1;
+        }
+        return $total;
+    }
+
+    public function studentFinancialStatement(Student $student)
+    {
+
+        $registrations = $student->registrations;
+
+        $pages = [];
+
+        foreach($registrations as $registraion) {
+
+            $aFinancials = $registraion->financials->toArray();
+
+            $financial = array_map(function($item) use ($aFinancials){
+                $item['total_by_service'] = self::calculateTypeOfServices($aFinancials, $item['service_type_id']);
+                $item['quota'] = $item['quota'] ?? 0;
+                return $item;
+            }, $aFinancials);
+
+            $page = [
+                'team_name' => $registraion->team->name,
+                'student_name' => $registraion->student->name,
+                'financials' => $financial,
+            ];
+
+            $pages[] = $page;
+        }
+        
+        $pdf = Pdf::loadView('export.student-financial-statement', compact('pages','student'));
+
+        return $pdf->download('extrato-financeiro.pdf');
     }
 
     private function convertToWords($amount)

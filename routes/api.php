@@ -50,6 +50,7 @@ Route::prefix('documents')->group(function () {
 Route::get('exports/class-diary', [ExportController::class, 'classDiary']);
 Route::get('exports/students-per-class', [ExportController::class, 'studentsPerClass']);
 Route::get('exports/receipt/{financial}', [ExportController::class, 'receipt']);
+Route::get('exports/student-financial-history/{student}', [ExportController::class, 'studentFinancialStatement']);
 
 /** Middleware */
 Route::group(['middleware' => ['apiJwt']], function () {

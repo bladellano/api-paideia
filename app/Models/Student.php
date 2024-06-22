@@ -25,6 +25,7 @@ class Student extends Model
     {
         return $this->hasMany(Registration::class, 'student_id')
             ->with('team:id,name')
+            ->with('student:id,name')
             ->with('financials')
             ->with('user:id,name');
     }
