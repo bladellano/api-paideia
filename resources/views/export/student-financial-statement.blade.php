@@ -75,7 +75,6 @@
                 <th>Descrição</th>
                 <th>Valor</th>
                 <th>Dt. Venc</th>
-                <th>Valor até o venc.</th>
                 <th>Situação</th>
                 <th>Dt. Pago</th>
                 <th>Forma</th>
@@ -86,15 +85,24 @@
                     <td>({{ $f['quota'] }}/{{ $f['total_by_service'] }}) {{ Str::upper($f['service_type']['name']) }} - {{ $page['team_name'] }}</td>
                     <td>R$ {{ number_format($f['value'], 2, ',', '.') }}</td>
                     <td>{{ $f['due_date'] }}</td>
-                    <td>R$ {{ number_format($f['value'], 2, ',', '.') }}</td>
                     <td class="{{ $f['paid'] ? 'status-quitado' : 'status-em-aberto' }}">
                         {{ $f['paid'] ? 'QUITADO' : 'EM ABERTO' }}
                     </td>
                     <td>{{ $f['pay_day'] }}</td>
                     <td>{{ $f['paid'] ? $f['payment_type']['name'] : '' }}</td>
-                    <td>R$ {{ number_format($f['value'], 2, ',', '.') }}</td>
+                    <td>{{ $f['paid'] ?  'R$ ' . number_format($f['value'], 2, ',', '.') : '' }}</td>
                 </tr>
             @endforeach
+
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td><b>TOTAL</b></td>
+              <td><b>{{ 'R$ ' . number_format($page['total_paid'], 2, ',', '.')}}</b></td>
+            </tr>
 
         </table>
 

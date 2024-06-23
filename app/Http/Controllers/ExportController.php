@@ -72,6 +72,13 @@ class ExportController extends Controller
 
             $aFinancials = $registraion->financials->toArray();
 
+            $totalPaid = array_reduce($aFinancials, function($carry, $item) {
+                if ($item['paid'] == 1) {
+                    $carry += $item['value'];
+                }
+                return $carry;
+            }, 0);
+
             $financial = array_map(function($item) use ($aFinancials){
                 $item['total_by_service'] = self::calculateTypeOfServices($aFinancials, $item['service_type_id']);
                 $item['quota'] = $item['quota'] ?? 0;
@@ -82,6 +89,7 @@ class ExportController extends Controller
                 'team_name' => $registraion->team->name,
                 'student_name' => $registraion->student->name,
                 'financials' => $financial,
+                'total_paid' => $totalPaid
             ];
 
             $pages[] = $page;
