@@ -73,9 +73,14 @@ class ExportController extends Controller
             $aFinancials = $registraion->financials->toArray();
 
             $totalPaid = array_reduce($aFinancials, function($carry, $item) {
-                if ($item['paid'] == 1) {
+                if ($item['paid'] == 1) 
                     $carry += $item['value'];
-                }
+                return $carry;
+            }, 0);
+
+            $totalNotPaid = array_reduce($aFinancials, function($carry, $item) {
+                if ($item['paid'] == 0) 
+                    $carry += $item['value'];
                 return $carry;
             }, 0);
 
@@ -89,7 +94,8 @@ class ExportController extends Controller
                 'team_name' => $registraion->team->name,
                 'student_name' => $registraion->student->name,
                 'financials' => $financial,
-                'total_paid' => $totalPaid
+                'total_paid' => $totalPaid,
+                'total_not_paid' => $totalNotPaid
             ];
 
             $pages[] = $page;

@@ -95,13 +95,18 @@
             @endforeach
 
             <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td><b>TOTAL</b></td>
-              <td><b>{{ 'R$ ' . number_format($page['total_paid'], 2, ',', '.')}}</b></td>
+              <td colspan="6" style="text-align: right"><b>TOTAL PAGO</b></td>
+              <td><b style="color: green">{{ 'R$ ' . number_format($page['total_paid'], 2, ',', '.')}}</b></td>
+            </tr>
+
+            <tr>
+              <td colspan="6" style="text-align: right"><b>TOTAL EM ABERTO</b></td>
+              <td><b style="color: red">{{ 'R$ ' . number_format($page['total_not_paid'], 2, ',', '.')}}</b></td>
+            </tr>
+
+            <tr>
+              <td colspan="6" style="text-align: right"><b>TOTAL</b></td>
+              <td><b>{{ 'R$ ' . number_format(($page['total_not_paid'] + $page['total_paid']), 2, ',', '.')}}</b></td>
             </tr>
 
         </table>

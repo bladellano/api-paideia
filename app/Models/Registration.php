@@ -38,7 +38,7 @@ class Registration extends Model
             ->with('user:id,name')
             ->with('paymentType:id,name')
             ->with('serviceType:id,name')
-            ->orderBy('service_type_id', 'asc')
+            ->orderBy('service_type_id', 'desc')
             ->orderBy('due_date', 'asc');
     }
 
