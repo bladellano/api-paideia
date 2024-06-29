@@ -8,15 +8,92 @@ use App\Models\Team;
 use App\Models\Student;
 use App\Models\Financial;
 use App\Models\SchoolGrade;
-use Illuminate\Http\Request;
+use App\Exports\ClassDiaryExport;
+use App\Exports\ClassStudentsPerClass;
+use App\Exports\ClassReportFinancialByTeam;
+use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use NumberToWords\NumberToWords;
-use App\Exports\ClassDiaryExport;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\ClassStudentsPerClass;
+use Illuminate\Http\Request;
 
 class ExportController extends Controller
 {
+    public function reportFinancial(Team $team, int $year)
+    {
+
+        $team->registrations;
+
+        $toArray = $team->registrations->toArray();
+
+        $newToArray = [];
+
+        foreach($toArray as $std) {
+
+            $financials = array_map(function($item){
+                return [
+                    'id' => $item['id'],
+                    'registration_id' => $item['registration_id'],
+                    'service_type_id' => $item['service_type_id'],
+                    'quota' => $item['quota'],
+                    'value' => $item['value'],
+                    'due_date' => $item['due_date'],
+                    'paid' => $item['paid'],
+                    'pay_day' => $item['pay_day'],
+                    'payment_type_name' => $item['payment_type']['name'],
+                    'service_type_name' => $item['service_type']['name'],
+                ];
+            }, $std['financials']);
+
+            if(is_array($std['student'])) {
+
+                $newToArray[] = [
+                    'registration_id' => $std['id'],
+                    'student' => $std['student'],
+                    'financials' => $financials
+                ];
+            }
+        }
+
+        foreach($newToArray as &$student) {
+            $student['financials'] = array_filter($student['financials'], function ($item) use ($year) {
+                $dueDate = \DateTime::createFromFormat('d/m/Y', $item['due_date']);
+                //! @TODO aqui pode ser dinamizado mudando o tipo de serviçõ futuramente.
+                return $item['service_type_id'] == 1 && $dueDate->format('Y') == $year; // TIPO MENSALIDADE
+            });
+        }
+
+        $financialReport = [];
+
+        foreach ($newToArray as $registration) {
+
+            $studentName = $registration['student']['name'];
+            $studentId = $registration['student']['id'];
+            $financials = $registration['financials'];
+            
+            $monthlyFinancials = array_fill(1, 12, 0);
+
+            foreach ($financials as $finance) {
+
+                $dueDate = \DateTime::createFromFormat('d/m/Y', $finance['due_date']);
+
+                if ($dueDate) {
+                    $month = (int) $dueDate->format('m');
+                    $monthlyFinancials[$month] = [
+                            'value'=> number_format($finance['value'], 2, ',', '.'), 
+                            'paid' => $finance['paid'],
+                            'overdue' => !$finance['paid'] && $dueDate < new \DateTime() ? 1 : 0,
+                        ];
+                }
+            }
+
+            array_unshift($monthlyFinancials, $studentName);
+
+            $financialReport[$studentId] = $monthlyFinancials;
+        }
+
+        return Excel::download(new ClassReportFinancialByTeam($financialReport, $year, $team->name), __FUNCTION__ . "_" . \Str::random(10), \Maatwebsite\Excel\Excel::XLSX);
+    }
+
     public function classDiary(Request $request)
     {
         $team = Team::findOrFail($request->team_id);
@@ -44,7 +121,7 @@ class ExportController extends Controller
 
         $financial->course = mb_strtoupper($getCourse[0]->course);
         $financial->currentDate = Carbon::now();
-        $financial->valueFormated =  number_format($financial->value, 2, ',', '.');;
+        $financial->valueFormated = number_format($financial->value, 2, ',', '.');
         $financial->inFull = $this->convertToWords($financial->value);
 
         $pdf = Pdf::loadView('export.receipt', compact('financial'));

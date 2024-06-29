@@ -30,9 +30,8 @@ class Team extends Model
     public function registrations()
     {
         return $this->hasMany(Registration::class)
-        ->with('student:id,name')
-        ->join('students', 'registrations.student_id', '=', 'students.id')
-        ->orderBy('students.name');
+        ->with('student:id,name,cpf,gender,name_mother')
+        ->with('financials');
     }
 
     protected $casts = [
