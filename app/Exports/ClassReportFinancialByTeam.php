@@ -2,24 +2,21 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Events\BeforeSheet;
+use App\Helpers\GenerateReportFinancial;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
-use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ClassReportFinancialByTeam implements FromCollection, WithMapping, WithEvents, WithCustomStartCell, WithColumnWidths
+class ClassReportFinancialByTeam implements FromCollection, WithMapping, WithColumnWidths, WithEvents
 {
 
     private $financialReport;
-    private $quantity;
     private $index = 0;
-    private $year;
-    private $teamName;
+    private $quantityColumns;
+    private $generateReportFinancial;
 
     private const COLORS = [
         'SUCCESS' => 'D1E7DD',
@@ -29,13 +26,29 @@ class ClassReportFinancialByTeam implements FromCollection, WithMapping, WithEve
 
     public function __construct(
         array $financialReport,
-        int $year,
         string $teamName,
     ) {
-        $this->financialReport = $financialReport;
-        $this->quantity = count($this->financialReport);
-        $this->year = $year;
-        $this->teamName = $teamName;
+
+        $preparedReport = [];
+
+        foreach ($financialReport as $fnc) {
+
+            $preparedReport[] = [
+                'ALUNOS' => $fnc['student_name'],
+                ...$fnc['financials']
+            ];
+        }
+
+        $header = array_keys($preparedReport[0]);
+        $header[0] = "{$header[0]} - " . $teamName;
+        $header = array_map('mb_strtoupper', $header);
+
+        $this->quantityColumns = count($header);
+
+        array_unshift($preparedReport, $header);
+
+        $this->financialReport = $preparedReport;
+        $this->generateReportFinancial = new GenerateReportFinancial();
     }
 
     /**
@@ -43,14 +56,8 @@ class ClassReportFinancialByTeam implements FromCollection, WithMapping, WithEve
      */
     public function collection()
     {
-        $c = collect($this->financialReport);
 
-        return $c;
-    }
-
-    public function startCell(): string
-    {
-        return 'A3';
+        return collect($this->financialReport);
     }
 
     public function columnWidths(): array
@@ -58,41 +65,21 @@ class ClassReportFinancialByTeam implements FromCollection, WithMapping, WithEve
         return [
             'A' => 5,
             'B' => 40,
-            'C' => 10,
-            'D' => 10,
-            'E' => 10,
-            'F' => 10,
-            'G' => 10,
-            'H' => 10,
-            'I' => 10,
-            'J' => 10,
-            'K' => 10,
-            'L' => 10,
-            'M' => 10,
-            'N' => 10,
         ];
     }
 
     public function map($item): array
     {
 
-        $this->index++;
+        $item = array_map(function ($item) {
+            if (isset($item['value']))
+                return $item['value'];
+            return $item;
+        }, $item);
 
         return [
-            $this->index,
-            mb_strtoupper($item[0]),
-            empty($item[1]) ? "--" : $item[1]['value'],
-            empty($item[2]) ? "--" : $item[2]['value'],
-            empty($item[3]) ? "--" : $item[3]['value'],
-            empty($item[4]) ? "--" : $item[4]['value'],
-            empty($item[5]) ? "--" : $item[5]['value'],
-            empty($item[6]) ? "--" : $item[6]['value'],
-            empty($item[7]) ? "--" : $item[7]['value'],
-            empty($item[8]) ? "--" : $item[8]['value'],
-            empty($item[9]) ? "--" : $item[9]['value'],
-            empty($item[10]) ? "--" : $item[10]['value'],
-            empty($item[11]) ? "--" : $item[11]['value'],
-            empty($item[12]) ? "--" : $item[12]['value'],
+            $this->index++,
+            ...$item
         ];
     }
 
@@ -114,27 +101,6 @@ class ClassReportFinancialByTeam implements FromCollection, WithMapping, WithEve
         ];
 
         return [
-            BeforeSheet::class => function (BeforeSheet $event) {
-
-                /** SUPER HEADER */
-                $event->sheet->mergeCells('A1:N1', Worksheet::MERGE_CELL_CONTENT_MERGE);
-                $event->sheet->setCellValue('A1', "RELATÓRIO FINANCEIRO POR TURMA\n " . $this->teamName);
-
-                $event->sheet->setCellValue('B2', 'ALUNOS');
-
-                $event->sheet->setCellValue('C2', 'JAN' . "/{$this->year}");
-                $event->sheet->setCellValue('D2', 'FEV' . "/{$this->year}");
-                $event->sheet->setCellValue('E2', 'MAR' . "/{$this->year}");
-                $event->sheet->setCellValue('F2', 'ABR' . "/{$this->year}");
-                $event->sheet->setCellValue('G2', 'MAI' . "/{$this->year}");
-                $event->sheet->setCellValue('H2', 'JUN' . "/{$this->year}");
-                $event->sheet->setCellValue('I2', 'JUL' . "/{$this->year}");
-                $event->sheet->setCellValue('J2', 'AGO' . "/{$this->year}");
-                $event->sheet->setCellValue('K2', 'SET' . "/{$this->year}");
-                $event->sheet->setCellValue('L2', 'OUT' . "/{$this->year}");
-                $event->sheet->setCellValue('M2', 'NOV' . "/{$this->year}");
-                $event->sheet->setCellValue('N2', 'DEZ' . "/{$this->year}");
-            },
             AfterSheet::class => function (AfterSheet $event) use ($aStylesHeader, $stylesAllCells) {
 
                 //? Configuracao do papel
@@ -153,48 +119,23 @@ class ClassReportFinancialByTeam implements FromCollection, WithMapping, WithEve
                 $event->sheet->getPageSetup()->setFitToPage(true);
 
                 //? Ajusta a altura de determinada dimensao (linha).
-                $event->sheet->getRowDimension('1')->setRowHeight(38);
+                $event->sheet->getRowDimension('1')->setRowHeight(20);
 
-                $concernable = $event->getConcernable();
-                $report = $concernable->financialReport;
+                $arFinancials = $event->getConcernable()->financialReport;
+                $arFinancials = $this->generateReportFinancial->reorderIndexes($arFinancials, 1);
 
-                /** APLICAÇÃO DOS ESTILOS */
-                $event->sheet->getStyle('A1:N2')->applyFromArray($aStylesHeader);
+                for ($i = 1; $i <= count($arFinancials); $i++) {
 
-                /** BORDAS/COTORNOS */
-                $headerHeigth = 2;
+                    $onlyNumbersIndex = array_values($arFinancials[$i]);
+                    $matrixFinTwo = $this->generateReportFinancial->reorderIndexes($onlyNumbersIndex, 2);
 
-                $event->sheet->getStyle("A1:N" . ($this->quantity + $headerHeigth))->applyFromArray($stylesAllCells);
+                    foreach ($matrixFinTwo as $k => $v) {
 
-                /** COLORIR */
-                $report = array_values($report);
+                        $letter = $this->generateReportFinancial->getColumnLetter($k);
 
-                $cellsMonths = [
-                    1 => 'C',
-                    2 => 'D',
-                    3 => 'E',
-                    4 => 'F',
-                    4 => 'F',
-                    5 => 'G',
-                    6 => 'H',
-                    7 => 'I',
-                    8 => 'J',
-                    9 => 'K',
-                    10 => 'L',
-                    11 => 'M',
-                    12 => 'N',
-                ];
+                        $range = "{$letter}{$i}:{$letter}{$i}";
 
-                $report = array_map(function ($item) {
-                    unset($item[0]);
-                    return $item;
-                }, $report);
-
-                foreach ($report as $key => $row) {
-
-                    foreach ($row as $m => $v) {
-
-                        if ($v == 0)
+                        if (!is_array($v))
                             continue;
 
                         $color = self::COLORS['DEFAULT'];
@@ -204,10 +145,6 @@ class ClassReportFinancialByTeam implements FromCollection, WithMapping, WithEve
 
                         if (!$v['paid'] && $v['overdue'])
                             $color = self::COLORS['DANGER'];
-
-                        $number = $key + 3; //! 3 = Quantidade de linhas que forma o header sem os alunos.
-
-                        $range = "{$cellsMonths[$m]}{$number}:{$cellsMonths[$m]}{$number}";
 
                         $event->sheet->getStyle($range)->applyFromArray([
                             'fill' => [
@@ -219,6 +156,12 @@ class ClassReportFinancialByTeam implements FromCollection, WithMapping, WithEve
                         ]);
                     }
                 }
+
+                /** APLICAÇÃO DOS ESTILOS */
+                $column = $this->generateReportFinancial->getColumnLetter($this->quantityColumns + 1);
+
+                #$event->sheet->getStyle("A1:{$column}1")->applyFromArray($aStylesHeader);
+                $event->sheet->getStyle("A1:{$column}" . count($arFinancials))->applyFromArray($stylesAllCells);
             }
 
         ];

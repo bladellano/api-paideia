@@ -11,6 +11,7 @@ use App\Models\SchoolGrade;
 use App\Exports\ClassDiaryExport;
 use App\Exports\ClassStudentsPerClass;
 use App\Exports\ClassReportFinancialByTeam;
+use App\Helpers\GenerateReportFinancial;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use NumberToWords\NumberToWords;
@@ -18,7 +19,7 @@ use Illuminate\Http\Request;
 
 class ExportController extends Controller
 {
-    public function reportFinancial(Team $team, int $year)
+    public function reportFinancial(Team $team)
     {
 
         $team->registrations;
@@ -55,43 +56,14 @@ class ExportController extends Controller
         }
 
         foreach($newToArray as &$student) {
-            $student['financials'] = array_filter($student['financials'], function ($item) use ($year) {
-                $dueDate = \DateTime::createFromFormat('d/m/Y', $item['due_date']);
-                //! @TODO aqui pode ser dinamizado mudando o tipo de serviçõ futuramente.
-                return $item['service_type_id'] == 1 && $dueDate->format('Y') == $year; // TIPO MENSALIDADE
+            $student['financials'] = array_filter($student['financials'], function ($item) {
+                return $item['service_type_id'] == 1; // TIPO MENSALIDADE
             });
         }
 
-        $financialReport = [];
+        $generateReport = (new GenerateReportFinancial())->execute($newToArray);
 
-        foreach ($newToArray as $registration) {
-
-            $studentName = $registration['student']['name'];
-            $studentId = $registration['student']['id'];
-            $financials = $registration['financials'];
-            
-            $monthlyFinancials = array_fill(1, 12, 0);
-
-            foreach ($financials as $finance) {
-
-                $dueDate = \DateTime::createFromFormat('d/m/Y', $finance['due_date']);
-
-                if ($dueDate) {
-                    $month = (int) $dueDate->format('m');
-                    $monthlyFinancials[$month] = [
-                            'value'=> number_format($finance['value'], 2, ',', '.'), 
-                            'paid' => $finance['paid'],
-                            'overdue' => !$finance['paid'] && $dueDate < new \DateTime() ? 1 : 0,
-                        ];
-                }
-            }
-
-            array_unshift($monthlyFinancials, $studentName);
-
-            $financialReport[$studentId] = $monthlyFinancials;
-        }
-
-        return Excel::download(new ClassReportFinancialByTeam($financialReport, $year, $team->name), __FUNCTION__ . "_" . \Str::random(10), \Maatwebsite\Excel\Excel::XLSX);
+        return Excel::download(new ClassReportFinancialByTeam($generateReport, $team->name), __FUNCTION__ . "_" . \Str::random(10), \Maatwebsite\Excel\Excel::XLSX);
     }
 
     public function classDiary(Request $request)
