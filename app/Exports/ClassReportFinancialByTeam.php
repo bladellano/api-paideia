@@ -72,8 +72,20 @@ class ClassReportFinancialByTeam implements FromCollection, WithMapping, WithCol
     {
 
         $item = array_map(function ($item) {
-            if (isset($item['value']))
-                return $item['value'];
+
+            // @TODO caso queira voltar para exibir o valor é remover os ifs internos.
+            if (isset($item['value'])) {
+
+                $value = "0,00";
+
+                if ($item['paid'])
+                    $value = $item['value'];
+
+                if (!$item['paid'] && $item['overdue'])
+                    $value = $item['value'];
+
+                return $value;
+            }
             return $item;
         }, $item);
 
