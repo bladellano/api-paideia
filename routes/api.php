@@ -71,6 +71,7 @@ Route::group(['middleware' => ['apiJwt']], function () {
 
     /** Alunos */
     Route::resource('students', StudentController::class);
+    Route::get('students/{student}/get-image', [StudentController::class, 'getImage']);
 
     /** Disciplinas */
     Route::resource('disciplines', DisciplineController::class);

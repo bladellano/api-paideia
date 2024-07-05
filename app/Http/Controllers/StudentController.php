@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Services\StudentService;
 use App\Http\Requests\StudentRequest;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StudentUpdateRequest;
 
 class StudentController extends Controller
@@ -18,6 +19,23 @@ class StudentController extends Controller
         $this->service = $service;
     }
 
+    public function getImage(Student $student)
+    {
+        $path = storage_path("app/{$student->image}");
+    
+        if (!empty($student->image) && file_exists($path)) {
+            $mimeType = mime_content_type($path);
+    
+            if (str_starts_with($mimeType, 'image/')) {
+                return response()->file($path, ['Content-Type' => $mimeType]);
+            } else {
+                return response()->json(['error' => true, 'message' => 'O arquivo não é uma imagem válida'], 400);
+            }
+        } else {
+            return response()->json(['error' => true, 'message' => 'Imagem não encontrada'], 404);
+        }
+    }
+
     public function index(Request $request)
     {
         return $this->service->getAll($request, ['registrations']);
@@ -26,10 +44,18 @@ class StudentController extends Controller
     public function store(StudentRequest $request)
     {
         try {
-            $data = $this->service->create($request->all());
-            return response()->json(['data'=> $data, 'message' => 'Registro criado com sucesso!'], Response::HTTP_CREATED);
-        } catch (\Exception $e) {
-            return response()->json(['error'=> true, 'message'=> $e->getMessage()], Response::HTTP_BAD_REQUEST);
+
+            $data = $request->all();
+            
+            if ($request->hasFile('image')) 
+                $data['image'] = $request->file('image')->store('students', 'local');
+
+            $data = $this->service->create($data);
+
+            return response()->json(['data' => $data, 'message' => 'Registro criado com sucesso!'], Response::HTTP_CREATED);
+        } catch (\PDOException $e) {
+
+            return response()->json(['error' => true, 'message'=> $e->getPrevious()->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -41,7 +67,19 @@ class StudentController extends Controller
     public function update(StudentUpdateRequest $request, Student $student)
     {
         try {
-            $data = $this->service->update($student->id, $request->all());
+
+            $data = $request->all();
+
+            if ($request->hasFile('image')) {
+
+                if (!is_null($student->image))
+                    @Storage::delete($student->image);
+
+                $data['image'] = $request->file('image')->store('students', 'local');
+            }
+
+            $data = $this->service->update($student->id, $data);
+        
             return response()->json(['data' => $data, 'message' => 'Cadastro atualizado com sucesso!']);
         } catch (\Exception $e) {
             return response()->json(['error' => true, 'message'=> $e->getMessage()], Response::HTTP_BAD_REQUEST);

@@ -24,9 +24,10 @@ class StudentUpdateRequest extends APIFormRequest
         return [
             'name' => 'required|min:3',
             'cpf' => 'required|cpf',
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:512',
             'name_mother' => 'required|min:3',
             'birth_date' => 'required|date',
-            'gender' => ['required',new GenderRule()],
+            'gender' => ['required', new GenderRule()],
             'nationality' => 'required',
             'naturalness' => 'required',
         ];

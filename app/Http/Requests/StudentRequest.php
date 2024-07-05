@@ -27,6 +27,7 @@ class StudentRequest extends APIFormRequest
             'phone' => 'regex:/^\(\d{2}\)\d{5}-\d{4}$/',
             'cpf' => 'required|cpf',
             'rg' => '',
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:512',
             'expedient_body' => '',
             'name_mother' => 'required|min:3',
             'birth_date' => 'required|date',
