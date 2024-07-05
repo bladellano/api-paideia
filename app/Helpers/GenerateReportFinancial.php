@@ -9,6 +9,10 @@ use DateInterval;
 class GenerateReportFinancial
 {
 
+    public static function compareStudents($a, $b) {
+        return strcmp($a['student']['name'], $b['student']['name']);
+    }
+
     public static function execute(array $data): array
     {
 

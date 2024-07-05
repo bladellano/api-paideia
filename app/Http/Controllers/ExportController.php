@@ -25,7 +25,11 @@ class ExportController extends Controller
         $team->registrations;
 
         $toArray = $team->registrations->toArray();
+        
+        $toArray = array_filter($toArray, fn($item) => isset($item['student']['name']));
 
+        usort($toArray, [GenerateReportFinancial::class, 'compareStudents']);
+        
         $newToArray = [];
 
         foreach($toArray as $std) {
