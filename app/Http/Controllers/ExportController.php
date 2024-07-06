@@ -8,14 +8,15 @@ use App\Models\Team;
 use App\Models\Student;
 use App\Models\Financial;
 use App\Models\SchoolGrade;
-use App\Exports\ClassDiaryExport;
-use App\Exports\ClassStudentsPerClass;
-use App\Exports\ClassReportFinancialByTeam;
-use App\Helpers\GenerateReportFinancial;
-use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use NumberToWords\NumberToWords;
-use Illuminate\Http\Request;
+use App\Exports\ClassDiaryExport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ClassStudentsPerClass;
+use App\Helpers\GenerateReportFinancial;
+use App\Exports\ClassReportFinancialByTeam;
+use App\Exports\ClassReportOfStudentDataByClass;
 
 class ExportController extends Controller
 {
@@ -82,6 +83,11 @@ class ExportController extends Controller
     public function studentsPerClass(Request $request)
     {
         return Excel::download(new ClassStudentsPerClass($request->team_id, $request->extra_lines), __FUNCTION__ . "_" . \Str::random(5), \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    public function reportOfStudentDataByClass(Team $team)
+    {
+        return Excel::download(new ClassReportOfStudentDataByClass($team), __FUNCTION__ . "_" . \Str::random(5), \Maatwebsite\Excel\Excel::XLSX);
     }
 
     public function receipt(Financial $financial)

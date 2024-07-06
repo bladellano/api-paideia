@@ -30,7 +30,7 @@ class Team extends Model
     public function registrations()
     {
         return $this->hasMany(Registration::class)
-        ->with('student:id,name,cpf,gender,name_mother')
+        ->with('student:id,name,cpf,rg,expedient_body,gender,nationality,naturalness,phone,email,name_mother,birth_date')
         ->with('financials');
     }
 
