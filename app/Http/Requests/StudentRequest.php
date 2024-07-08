@@ -23,15 +23,15 @@ class StudentRequest extends APIFormRequest
     {
         return [
             'name' => 'required|min:3',
-            'email' => 'email',
-            'phone' => 'regex:/^\(\d{2}\)\d{5}-\d{4}$/',
+            'email' => 'nullable|email',
+            'phone' => 'nullable|regex:/^\(\d{2}\)\d{5}-\d{4}$/',
             'cpf' => 'required|cpf',
-            'rg' => '',
+            'rg' => 'nullable',
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:512',
             'expedient_body' => '',
             'name_mother' => 'required|min:3',
             'birth_date' => 'required|date',
-            'gender' => ['required',new GenderRule()],
+            'gender' => ['required', new GenderRule()],
             'nationality' => 'required',
             'naturalness' => 'required',
         ];
