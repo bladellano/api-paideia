@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use Carbon\Carbon;
 use App\Models\Team;
 use App\Helpers\GenerateReportFinancial;
 use Maatwebsite\Excel\Events\AfterSheet;
@@ -31,7 +32,8 @@ class ClassReportOfStudentDataByClass implements FromCollection, WithColumnWidth
         "phone" => "telefone",
         "email" => "email",
         "name_mother" => "nome da mãe",
-        "birth_date" => "data de nascimento"
+        "birth_date" => "data de nascimento",
+        "age" => "idade"
     ];
 
     public function __construct(Team $team)
@@ -55,7 +57,10 @@ class ClassReportOfStudentDataByClass implements FromCollection, WithColumnWidth
 
         $students = array_column($toArray, 'student');
         $students = array_filter($students);
-        $students = array_map(fn ($i) => array_map('mb_strtoupper', $i), $students);
+        $students = array_map(function ($item) {
+            $item['age'] = Carbon::createFromFormat('d/m/Y', $item['birth_date'])->age;
+            return $item;
+        }, $students);
 
         $this->quantity = count($students);
 
@@ -93,6 +98,7 @@ class ClassReportOfStudentDataByClass implements FromCollection, WithColumnWidth
             'J' => 12,
             'K' => 22,
             'L' => 12,
+            'M' => 8,
         ];
     }
 
@@ -139,9 +145,9 @@ class ClassReportOfStudentDataByClass implements FromCollection, WithColumnWidth
                 //? Ajusta a altura de determinada dimensao (linha).
                 $event->sheet->getRowDimension('1')->setRowHeight(20);
 
-                $event->sheet->getStyle("A1:L2")->applyFromArray($aStylesHeader);
+                $event->sheet->getStyle("A1:M2")->applyFromArray($aStylesHeader);
 
-                $event->sheet->getStyle("A1:L" . $this->quantity + 2)->applyFromArray($stylesAllCells);
+                $event->sheet->getStyle("A1:M" . $this->quantity + 2)->applyFromArray($stylesAllCells);
             }
 
         ];
