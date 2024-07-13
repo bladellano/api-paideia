@@ -20,6 +20,7 @@ use App\Exports\ClassReportOfStudentDataByClass;
 
 class ExportController extends Controller
 {
+    /** Relatório financeiro por turma */
     public function reportFinancial(Team $team)
     {
 
@@ -71,6 +72,7 @@ class ExportController extends Controller
         return Excel::download(new ClassReportFinancialByTeam($generateReport, $team->name), __FUNCTION__ . "_" . \Str::random(10), \Maatwebsite\Excel\Excel::XLSX);
     }
 
+    /** Diário de classe */
     public function classDiary(Request $request)
     {
         $team = Team::findOrFail($request->team_id);
@@ -80,19 +82,43 @@ class ExportController extends Controller
         return Excel::download(new ClassDiaryExport($request->team_id, $disciplines, $notes), __FUNCTION__ . "_" . \Str::random(10), \Maatwebsite\Excel\Excel::XLSX);
     }
 
+    /** Relatório de alunos por turma */
     public function studentsPerClass(Request $request)
     {
         return Excel::download(new ClassStudentsPerClass($request->team_id, $request->extra_lines), __FUNCTION__ . "_" . \Str::random(5), \Maatwebsite\Excel\Excel::XLSX);
     }
 
+    /** Relatório de dados completos do aluno por turma */
     public function reportOfStudentDataByClass(Team $team)
     {
         return Excel::download(new ClassReportOfStudentDataByClass($team), __FUNCTION__ . "_" . \Str::random(5), \Maatwebsite\Excel\Excel::XLSX);
     }
 
+    /** Atestado de conclusão */
+    public function certificateOfCompletion(Student $student, Team $team)
+    {
+        Carbon::setLocale('pt_BR');
+
+        $student->course = $team->getStudentsByTeam($team->id)[0]->course;
+        $pdf = Pdf::loadView('export.certificate-of-completion', compact('student'));
+
+        return $pdf->download('atestado-de-conclusao.pdf');
+    }
+
+    /** Declaração de matrícula */
+    public function registrationStatement(Student $student, Team $team)
+    {
+        Carbon::setLocale('pt_BR');
+
+        $student->course = $team->getStudentsByTeam($team->id)[0]->course;
+        $pdf = Pdf::loadView('export.registration-statement', compact('student'));
+
+        return $pdf->download('declaracao-de-matricula.pdf');
+    }
+
+    /** Recibo */
     public function receipt(Financial $financial)
     {
-
         //? Configura a localidade para PT-BR
         Carbon::setLocale('pt_BR');
 
@@ -109,17 +135,9 @@ class ExportController extends Controller
         $pdf = Pdf::loadView('export.receipt', compact('financial'));
 
         return $pdf->download('recibo.pdf');
-    }
+    } 
 
-    private static function calculateTypeOfServices($types, $serviceTypeId) {
-        $total = 0;
-        foreach ($types as $type) {
-            if ($type['service_type_id'] == $serviceTypeId) 
-                $total += 1;
-        }
-        return $total;
-    }
-
+    /** Extrato financeiro do aluno */
     public function studentFinancialStatement(Student $student)
     {
 
@@ -177,5 +195,15 @@ class ExportController extends Controller
         $amountInWords = $currencyTransformer->toWords($money->getAmount(), 'BRL');
 
         return $amountInWords;
+    }
+
+    private static function calculateTypeOfServices($types, $serviceTypeId) 
+    {
+        $total = 0;
+        foreach ($types as $type) {
+            if ($type['service_type_id'] == $serviceTypeId) 
+                $total += 1;
+        }
+        return $total;
     }
 }

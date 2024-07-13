@@ -53,6 +53,8 @@ Route::get('exports/receipt/{financial}', [ExportController::class, 'receipt']);
 Route::get('exports/student-financial-history/{student}', [ExportController::class, 'studentFinancialStatement']);
 Route::get('exports/report-of-student-data-by-class/{team}', [ExportController::class, 'reportOfStudentDataByClass']);
 Route::get('exports/report-financial-by-team/{team}', [ExportController::class, 'reportFinancial']);
+Route::get('exports/certificate-of-completion/{student}/team/{team}', [ExportController::class, 'certificateOfCompletion']);
+Route::get('exports/registration-statement/{student}/team/{team}', [ExportController::class, 'registrationStatement']);
 
 /** Middleware */
 Route::group(['middleware' => ['apiJwt']], function () {
