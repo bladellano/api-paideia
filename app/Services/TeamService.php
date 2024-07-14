@@ -28,6 +28,7 @@ class TeamService
         $team = $this->repository->find($id);
         $team->grid;
         $team->polo;
+        $team->registrations;
         return [$team];
     }
 

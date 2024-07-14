@@ -12,11 +12,14 @@ use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use NumberToWords\NumberToWords;
 use App\Exports\ClassDiaryExport;
+use App\Exports\ClassTransferReport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ClassStudentsPerClass;
+use App\Exports\ClassStudentReportCard;
 use App\Helpers\GenerateReportFinancial;
 use App\Exports\ClassReportFinancialByTeam;
 use App\Exports\ClassReportOfStudentDataByClass;
+use Exception;
 
 class ExportController extends Controller
 {
@@ -27,16 +30,16 @@ class ExportController extends Controller
         $team->registrations;
 
         $toArray = $team->registrations->toArray();
-        
-        $toArray = array_filter($toArray, fn($item) => isset($item['student']['name']));
+
+        $toArray = array_filter($toArray, fn ($item) => isset($item['student']['name']));
 
         usort($toArray, [GenerateReportFinancial::class, 'compareStudents']);
-        
+
         $newToArray = [];
 
-        foreach($toArray as $std) {
+        foreach ($toArray as $std) {
 
-            $financials = array_map(function($item){
+            $financials = array_map(function ($item) {
                 return [
                     'id' => $item['id'],
                     'registration_id' => $item['registration_id'],
@@ -51,7 +54,7 @@ class ExportController extends Controller
                 ];
             }, $std['financials']);
 
-            if(is_array($std['student'])) {
+            if (is_array($std['student'])) {
 
                 $newToArray[] = [
                     'registration_id' => $std['id'],
@@ -61,7 +64,7 @@ class ExportController extends Controller
             }
         }
 
-        foreach($newToArray as &$student) {
+        foreach ($newToArray as &$student) {
             $student['financials'] = array_filter($student['financials'], function ($item) {
                 return $item['service_type_id'] == 1; // TIPO MENSALIDADE
             });
@@ -92,6 +95,39 @@ class ExportController extends Controller
     public function reportOfStudentDataByClass(Team $team)
     {
         return Excel::download(new ClassReportOfStudentDataByClass($team), __FUNCTION__ . "_" . \Str::random(5), \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    /** Relatório de repasse */
+    public function transferReport(Team $team, string $start_date, string $end_date)
+    {
+        $team->registrations;
+
+        $toArray = $team->registrations->toArray();
+        $registrations = array_filter($toArray, fn ($item) => isset($item['student']['name']));
+
+        $start_date = (new \DateTime($start_date))->format('d/m/Y');
+        $end_date = (new \DateTime($end_date))->format('d/m/Y');
+
+        $report = \App\Helpers\GenerateReportFinancial::organizesInTheFormOfTransfer($registrations, $team, $start_date, $end_date);
+
+        return Excel::download(new ClassTransferReport($report, $team, $start_date, $end_date), __FUNCTION__ . "_" . \Str::random(5), \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    /** Gera o boletim do aluno */
+    public function studentReportCard(Student $student, Team $team)
+    {
+
+        $grades = SchoolGrade::getGrade($student->id);
+        $arGrades = $grades->toArray();
+
+        $arGrades = array_map(function ($item) {
+            $item['discipline_name'] = $item['discipline']['name'];
+            return $item;
+        }, $arGrades);
+
+        $arGrades = \App\Helpers\GenerateReportFinancial::organizeNotesForBulletin($arGrades);
+
+        return Excel::download(new ClassStudentReportCard($arGrades, $student, $team), __FUNCTION__ . "_" . \Str::random(5), \Maatwebsite\Excel\Excel::XLSX);
     }
 
     /** Atestado de conclusão */
@@ -135,7 +171,7 @@ class ExportController extends Controller
         $pdf = Pdf::loadView('export.receipt', compact('financial'));
 
         return $pdf->download('recibo.pdf');
-    } 
+    }
 
     /** Extrato financeiro do aluno */
     public function studentFinancialStatement(Student $student)
@@ -145,23 +181,23 @@ class ExportController extends Controller
 
         $pages = [];
 
-        foreach($registrations as $registraion) {
+        foreach ($registrations as $registraion) {
 
             $aFinancials = $registraion->financials->toArray();
 
-            $totalPaid = array_reduce($aFinancials, function($carry, $item) {
-                if ($item['paid'] == 1) 
+            $totalPaid = array_reduce($aFinancials, function ($carry, $item) {
+                if ($item['paid'] == 1)
                     $carry += $item['value'];
                 return $carry;
             }, 0);
 
-            $totalNotPaid = array_reduce($aFinancials, function($carry, $item) {
-                if ($item['paid'] == 0) 
+            $totalNotPaid = array_reduce($aFinancials, function ($carry, $item) {
+                if ($item['paid'] == 0)
                     $carry += $item['value'];
                 return $carry;
             }, 0);
 
-            $financial = array_map(function($item) use ($aFinancials){
+            $financial = array_map(function ($item) use ($aFinancials) {
                 $item['total_by_service'] = self::calculateTypeOfServices($aFinancials, $item['service_type_id']);
                 $item['quota'] = $item['quota'] ?? 0;
                 return $item;
@@ -177,8 +213,8 @@ class ExportController extends Controller
 
             $pages[] = $page;
         }
-        
-        $pdf = Pdf::loadView('export.student-financial-statement', compact('pages','student'));
+
+        $pdf = Pdf::loadView('export.student-financial-statement', compact('pages', 'student'));
 
         return $pdf->download('extrato-financeiro.pdf');
     }
@@ -197,11 +233,11 @@ class ExportController extends Controller
         return $amountInWords;
     }
 
-    private static function calculateTypeOfServices($types, $serviceTypeId) 
+    private static function calculateTypeOfServices($types, $serviceTypeId)
     {
         $total = 0;
         foreach ($types as $type) {
-            if ($type['service_type_id'] == $serviceTypeId) 
+            if ($type['service_type_id'] == $serviceTypeId)
                 $total += 1;
         }
         return $total;

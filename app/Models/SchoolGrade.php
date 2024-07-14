@@ -31,7 +31,10 @@ class SchoolGrade extends Model
 
     public static function getGrade($studentId)
     {
-        return self::where('student_id', $studentId)->get();
+        $grades = self::where('student_id', $studentId);
+        $grades->with('discipline');
+
+        return $grades->get();
     }
 
     public function student()
