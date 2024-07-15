@@ -28,9 +28,9 @@ class TeamController extends Controller
     {
         try {
             $data = $this->service->create($request->all());
-            return response()->json(['data'=> $data, 'message' => 'Registro criado com sucesso!'], Response::HTTP_CREATED);
+            return response()->json(['data' => $data, 'message' => 'Registro criado com sucesso!'], Response::HTTP_CREATED);
         } catch (\Exception $e) {
-            return response()->json(['error'=> true, 'message'=> $e->getMessage()], Response::HTTP_BAD_REQUEST);
+            return response()->json(['error' => true, 'message'=> $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 
