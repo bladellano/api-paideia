@@ -31,7 +31,12 @@ class Team extends Model
     {
         return $this->hasMany(Registration::class)
         ->with('student:id,name,cpf,rg,expedient_body,gender,nationality,naturalness,phone,email,name_mother,birth_date')
-        ->with('financials');
+        // ->with('financials');
+        ->with('financials')
+        ->join('students', 'registrations.student_id', '=', 'students.id')
+        ->orderBy('students.name', 'asc')
+        ->select('registrations.*');
+        //! @TODO talvez tenha problemas em outras partes do sistema.
     }
 
     protected $casts = [
