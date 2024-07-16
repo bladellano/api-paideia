@@ -18,8 +18,9 @@
             <p style="text-align:right">Ananindeua/PA, {{ \Carbon\Carbon::now()->translatedFormat('d \d\e F \d\e Y') }}.</p>
 
             <p style="padding:100px 0px; text-align:center">
+                <img style="margin-bottom: -20px" src="{{ public_path('/rosangela-santos-assinatura.png') }}" alt="LOGO - PAIDEIA" width="180px"><br/>
                 ________________________________________________<br/>
-                Rosangela Maria Silva dos Santos<br/>Diretora Pedagógica
+                Rosangela Santos<br/>Diretora Pedagógica
             </p>
 
             <p style="font-size:12px; text-align:center">
@@ -28,16 +29,17 @@
                 Tel/Cel/What: 91 3722-9891 / 9 8176-9979 / 91 9 8208-4651
             </p>
         
+            <h4 style="text-align:center">OBSERVAÇÃO: Este documento possui validade de 30 dias, a partir da data da emissão.</h4>
+
         </td>
     </tr>
 </table>
 
-<div style="page-break-after: always"></div>
+{{-- <div style="page-break-after: always"></div>
 
 <table style="width:98%;">
     <tr>
         <td border="1" style="border:1px solid #000; padding:10px;">
-            <h4 style="text-align:center">OBSERVAÇÃO: Este documento possui validade de 30 dias, a partir da data da emissão.</h4>
         </td>
     </tr>
-</table>
+</table> --}}

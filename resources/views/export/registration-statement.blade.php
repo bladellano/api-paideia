@@ -21,11 +21,12 @@
             </p>
 
             <p style="padding:100px 0px; text-align:center">
+                <img style="margin-bottom: -20px" src="{{ public_path('/rosangela-santos-assinatura.png') }}" alt="LOGO - PAIDEIA" width="180px"><br/>
                 ________________________________________________<br />
-                Rosangela Maria Silva dos Santos<br />Diretora Pedagógica
+                Rosangela Santos<br />Diretora Pedagógica
             </p>
 
-            <h4 style="text-align:center">Obs.: Esta DECLARAÇÃO possui validade de 30 (trinta) dias, contadas a partir da data de sua emissão.</h4>
+            <h4 style="text-align:center">Obs.: Esta DECLARAÇÃO possui validade de 30 (trinta) dias, contados a partir da data de sua emissão.</h4>
 
             <p style="font-size:12px; text-align:center">
                 Tel/Cel/What: 91 3722-9891 / 9 8176-9979 / 91 9 8208-4651<br />
