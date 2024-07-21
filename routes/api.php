@@ -26,6 +26,14 @@ use App\Http\Controllers\{
     TextDocumentController
 };
 
+
+Route::post('webhook/order', function(\Illuminate\Http\Request $request){
+
+     // Log para depuração (opcional, remova em produção)
+     \Illuminate\Support\Facades\Log::info('Pagar.me Webhook Received: ', $request->all());
+
+});
+
 Route::get('send-mail', [MailController::class, 'index']);
 
 /** Auth */
