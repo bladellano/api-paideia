@@ -1,18 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+use App\Http\Controllers\Payment\OrderController;
+use App\Http\Controllers\OrderController as OrderWeb;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+/** Gateway pagamento - Front */
+Route::get('payment/create-order/{financial}', [OrderWeb::class, 'create'])->name('payment.orders.create');
+Route::post('payment/orders', [OrderController::class, 'create'])->name('payment.orders.store');
+
+

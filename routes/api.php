@@ -26,14 +26,18 @@ use App\Http\Controllers\{
     TextDocumentController
 };
 
+use App\Http\Controllers\Payment\OrderController;
+use App\Http\Controllers\Payment\WebHookController;
 
-Route::post('webhook/order', function(\Illuminate\Http\Request $request){
+//** Gateway de pagamento */
 
-     // Log para depuração (opcional, remova em produção)
-     \Illuminate\Support\Facades\Log::info('Pagar.me Webhook Received: ', $request->all());
+Route::post('payment/orders', [OrderController::class, 'create']);
+Route::get('payment/orders', [OrderController::class, 'index']);
 
-});
+//** Gateway de pagamento: webhook */
+Route::get('webhook/order', [WebHookController::class, 'order']);
 
+/** E-mail */
 Route::get('send-mail', [MailController::class, 'index']);
 
 /** Auth */
