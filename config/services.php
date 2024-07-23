@@ -31,4 +31,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'pagarme' => [
+    'api_key' => env('PAGARME_API_KEY'),
+    'api_url' => env('PAGARME_API_URL'),
+    ],
+
 ];

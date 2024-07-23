@@ -11,8 +11,8 @@ class PagarMeService
 
     public function __construct()
     {
-        $this->apiKey = getenv('PAGARME_API_KEY');
-        $this->apiUrl = getenv('PAGARME_API_URL');
+        $this->apiKey = config('services.pagarme.api_key');
+        $this->apiUrl = config('services.pagarme.api_url');
     }
 
     public function request($method, $endpoint, $data = [])
