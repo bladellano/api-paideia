@@ -35,7 +35,7 @@ Route::post('payment/orders', [OrderController::class, 'create']);
 Route::get('payment/orders', [OrderController::class, 'index']);
 
 //** Gateway de pagamento: webhook */
-Route::get('webhook/order', [WebHookController::class, 'order']);
+Route::post('webhook/order', [WebHookController::class, 'order']);
 
 /** E-mail */
 Route::get('send-mail', [MailController::class, 'index']);
