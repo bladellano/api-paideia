@@ -31,7 +31,7 @@ use App\Http\Controllers\Payment\WebHookController;
 
 //** Gateway de pagamento */
 
-Route::post('payment/orders', [OrderController::class, 'create']);
+Route::post('payment/orders', [OrderController::class, 'create'])->name('api.payment.orders.store');
 Route::get('payment/orders', [OrderController::class, 'index']);
 
 //** Gateway de pagamento: webhook */

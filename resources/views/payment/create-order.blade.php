@@ -42,7 +42,7 @@
     </div>
     <h2 class="text-center">Efetuar Pagamento com Cartão de Crédito</h2>
 
-    <form id="paymentForm" action="{{ route('payment.orders.store') }}" method="POST">
+    <form id="paymentForm" action="{{ route('api.payment.orders.store') }}" method="POST">
         @csrf
 
         <h4>Informação do Produto ou Serviço</h4>
