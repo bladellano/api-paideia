@@ -2,7 +2,8 @@
 <html>
 <head>
     <title>Efetuar Pagamento</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         .input-icon {
             position: relative;
@@ -17,18 +18,31 @@
             transform: translateY(-50%);
             pointer-events: none;
         }
-
         fieldset {
             background: azure;
+        }
+        /* Estilo do Spinner */
+        #loading {
+            display: none; /* Escondido por padrão */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999; /* Coloca o loading acima de outros elementos */
         }
     </style>
 </head>
 <body>
 <div class="container mt-5 mb-5">
 
+    <div id="loading">
+      <div class="spinner-border" role="status">
+          <span class="visually-hidden">Carregando...</span>
+      </div>
+    </div>
     <h2 class="text-center">Efetuar Pagamento com Cartão de Crédito</h2>
 
-    <form action="{{ route('payment.orders.store') }}" method="POST">
+    <form id="paymentForm" action="{{ route('payment.orders.store') }}" method="POST">
         @csrf
 
         <h4>Informação do Produto ou Serviço</h4>
@@ -170,4 +184,64 @@
     </form>
 </div>
 </body>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $('#paymentForm').on('submit', function (event) {
+
+            event.preventDefault();
+
+            $.ajax({
+                url: $(this).attr('action'),
+                method: $(this).attr('method'),
+                data: $(this).serialize(),
+                beforeSend: () => {
+                  $('#loading').show();
+                  $('button').prop('disabled', true);
+                },
+                success: function (response) {
+
+                console.log('response', response);
+
+                  if(response.status == 'paid') {
+                      Swal.fire({
+                          title: 'Sucesso!',
+                          text: 'Pagamento efetuado com sucesso!',
+                          icon: 'success',
+                          confirmButtonText: 'OK'
+                      }).then(() => {
+                        document.querySelector('form').reset();
+                      });
+                  } else {
+                    Swal.fire({
+                          title: 'Sucesso!',
+                          text: 'Transação efetuada com sucesso! Por favor, aguarde até o pagamento ser processado.',
+                          icon: 'warning',
+                          confirmButtonText: 'OK'
+                      }).then(() => {
+                        document.querySelector('form').reset();
+                      });
+                  }
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        title: 'Erro!',
+                        text: 'Ocorreu um erro ao efetuar o pagamento. Verifique os dados do cartão. Tente novamente.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    $('button').prop('disabled', false);
+                    console.error(xhr.responseText);
+                },
+                complete: () => {
+                  $('#loading').hide();
+                }
+            });
+        });
+    });
+</script>
+
 </html>
