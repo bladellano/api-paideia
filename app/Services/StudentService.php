@@ -31,6 +31,7 @@ class StudentService
         $student->registrations;
         $student->user;
         $student->books;
+        $student->age = $student->age;
         return [$student];
     }
 
