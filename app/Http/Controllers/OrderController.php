@@ -29,7 +29,7 @@ class OrderController extends Controller
 
         $response = json_decode($financial->gateway_response);
 
-        if($response) {
+        if($response && isset($response->charges[0]->last_transaction)) {
             //! @TODO - Futuramente utilizar barcode e qrycode.
             $charges = $response->charges[0]->last_transaction;
             $boletoPDF = $charges->pdf;
