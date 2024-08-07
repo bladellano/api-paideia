@@ -36,7 +36,7 @@
                 error: function (xhr, status, error) {
                     Swal.fire({
                         title: 'Erro!',
-                        text: 'Ocorreu um erro ao efetuar o pagamento. Verifique os dados do cartão. Tente novamente.',
+                        text: 'Ocorreu um erro ao efetuar o pagamento. Verifique se falta algum dado a ser preenchido e tente novamente.',
                         icon: 'error',
                         confirmButtonText: 'OK'
                     });
