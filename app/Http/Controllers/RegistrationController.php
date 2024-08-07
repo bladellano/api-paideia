@@ -9,16 +9,6 @@ use Illuminate\Http\Response;
 class RegistrationController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -55,18 +45,6 @@ class RegistrationController extends Controller
         $register->with('team');
 
         return $register->get();
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Registration  $registration
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Registration $registration)
-    {
-        //
     }
 
     /**

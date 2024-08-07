@@ -28,7 +28,7 @@ class OrderController extends Controller
 
     public function create(Request $request)
     {
-
+        
         try {
 
             $order = $this->pagarMeOrder->createOrder($request->all());

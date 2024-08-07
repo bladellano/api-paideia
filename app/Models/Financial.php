@@ -23,11 +23,19 @@ class Financial extends Model
         'user_id'
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime:d/m/Y H:m:s',
+        'due_date' => 'datetime:d/m/Y',
+        'pay_day' => 'datetime:d/m/Y',
+    ];
+
+    protected $appends = ['urlcc', 'urlticket'];
+
     public function registration()
     {
         return $this->belongsTo(Registration::class)
-        ->with('student:id,name,email,cpf,phone,naturalness')
-        ->with('team:id,name');
+            ->with('student:id,name,email,cpf,phone,naturalness')
+            ->with('team:id,name');
     }
 
     public function serviceType()
@@ -55,10 +63,14 @@ class Financial extends Model
         });
     }
 
-    protected $casts = [
-        'created_at' => 'datetime:d/m/Y H:m:s',
-        'due_date' => 'datetime:d/m/Y',
-        'pay_day' => 'datetime:d/m/Y',
-    ];
-    
+    // Acessores para a URL_BASE para o gateway de pagamento.
+    public function getUrlccAttribute()
+    {
+        return config('app.url') . "/payment/create-order/{$this->getAttribute('id')}";
+    }
+
+    public function getUrlticketAttribute()
+    {
+        return config('app.url') . "/payment/create-order-ticket/{$this->getAttribute('id')}";
+    }
 }

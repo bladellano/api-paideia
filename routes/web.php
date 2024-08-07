@@ -10,6 +10,6 @@ Route::get('/', function () {
 
 /** Gateway pagamento - Front */
 Route::get('payment/create-order/{financial}', [OrderWeb::class, 'create'])->name('payment.orders.create');
-// Route::post('payment/orders', [OrderController::class, 'create'])->name('payment.orders.store');
+Route::get('payment/create-order-ticket/{financial}', [OrderWeb::class, 'createTicket'])->name('payment.orders.create-ticket');
 
 
