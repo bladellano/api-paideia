@@ -30,16 +30,17 @@ class OrderController extends Controller
         $response = json_decode($financial->gateway_response);
 
         if($response && isset($response->charges[0]->last_transaction)) {
-            //! @TODO - Futuramente utilizar barcode e qrycode.
+            //! @TODO - No futuro, utilizar código de barras e QR code.
             $charges = $response->charges[0]->last_transaction;
             $boletoPDF = $charges->pdf;
         }
 
-        if($financial->paid == 1) {
+        if($financial->paid == 1) 
             return view('payment.paid-order', compact('financial'));
-        }
 
         //! @TODO - Verificar se um boleto já foi criado e, em caso positivo, exibir o código de barras, o link do boleto, entre outras informações relevantes.
+        //! @TODO - Quando apagar um boleto pelo sistema Paideia, tem que remover do Pargarme também.
+        //! @TODO - Notificar o aluno com o boleto: anexar ou exibir o link no corpo do e-mail.
 
         return view('payment.create-order-ticket', compact('financial', 'states', 'boletoPDF'));
     }

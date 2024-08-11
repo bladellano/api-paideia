@@ -2,25 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
+use Str;
 use Money\Money;
 use Carbon\Carbon;
 use App\Models\Team;
 use App\Models\Student;
 use App\Models\Financial;
 use App\Models\SchoolGrade;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Barryvdh\DomPDF\Facade\Pdf;
-use NumberToWords\NumberToWords;
-use App\Exports\ClassDiaryExport;
-use App\Exports\ClassTransferReport;
-use Maatwebsite\Excel\Facades\Excel;
+use App\Helpers\GenerateReportFinancial;
 use App\Exports\ClassStudentsPerClass;
 use App\Exports\ClassStudentReportCard;
-use App\Helpers\GenerateReportFinancial;
 use App\Exports\ClassReportFinancialByTeam;
 use App\Exports\ClassReportOfStudentDataByClass;
+use App\Exports\ClassMainAnnualPerformanceReport;
+use App\Exports\ClassDiaryExport;
+use App\Exports\ClassTransferReport;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+use NumberToWords\NumberToWords;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ExportController extends Controller
 {
@@ -32,7 +34,7 @@ class ExportController extends Controller
 
         $toArray = $team->registrations->toArray();
 
-        $toArray = array_filter($toArray, fn ($item) => isset($item['student']['name']));
+        $toArray = array_filter($toArray, fn($item) => isset($item['student']['name']));
 
         usort($toArray, [GenerateReportFinancial::class, 'compareStudents']);
 
@@ -98,6 +100,19 @@ class ExportController extends Controller
         return Excel::download(new ClassReportOfStudentDataByClass($team), __FUNCTION__ . "_" . \Str::random(5), \Maatwebsite\Excel\Excel::XLSX);
     }
 
+    /** Relatório de aproveitamento anual (etapa 1 + etapa 2 = média) */
+    public function annualPerformanceReport(Team $team)
+    {
+        $grades = DB::table('school_grades as sg')
+            ->join('students as s', 'sg.student_id', '=', 's.id')
+            ->join('disciplines as d', 'sg.discipline_id', '=', 'd.id')
+            ->where('sg.team_id', $team->id)
+            ->select('sg.*', 's.name as student_name', 'd.name as discipline_name')
+            ->get();
+
+        return Excel::download(new ClassMainAnnualPerformanceReport($grades, $team->name), __FUNCTION__ . "_" . Str::random(5), \Maatwebsite\Excel\Excel::XLSX);
+    }
+
     /** Relatório de repasse */
     public function transferReport(Team $team, string $start_date, string $end_date)
     {
@@ -105,14 +120,14 @@ class ExportController extends Controller
 
         $toArray = $team->registrations->toArray();
 
-        $registrations = array_filter($toArray, fn ($item) => isset($item['student']['name']));
+        $registrations = array_filter($toArray, fn($item) => isset($item['student']['name']));
 
         $start_date = (new \DateTime($start_date))->format('d/m/Y');
         $end_date = (new \DateTime($end_date))->format('d/m/Y');
 
         $report = \App\Helpers\GenerateReportFinancial::organizesInTheFormOfTransfer($registrations, $team, $start_date, $end_date);
 
-        if(!count($report)) 
+        if (!count($report))
             return response()->json(['error' => true, 'message' => 'Esta turma não possui dados financeiros ou o período selecionado não retornou pendências financeiras.'], Response::HTTP_OK);
 
         return Excel::download(new ClassTransferReport($report, $team, $start_date, $end_date), __FUNCTION__ . "_" . \Str::random(5), \Maatwebsite\Excel\Excel::XLSX);
@@ -125,7 +140,7 @@ class ExportController extends Controller
         $grades = SchoolGrade::getGrade($student->id);
         $arGrades = $grades->toArray();
 
-        if(!count($arGrades)) 
+        if (!count($arGrades))
             return response()->json(['error' => true, 'message' => 'Esse aluno não possui notas para poder gerar um boletim.'], Response::HTTP_OK);
 
         $arGrades = array_map(function ($item) {
