@@ -26,6 +26,50 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ExportController extends Controller
 {
+
+    public function defaulters(Request $request)
+    {
+        $query = DB::table('financials as f')
+            ->select(
+                's.name',
+                's.phone',
+                's.email',
+                'f.observations',
+                'f.quota',
+                'st.name as service_type_name',
+                'f.due_date',
+                'f.value',
+                'f.paid',
+                't.id as team_id',
+                't.name as team_name'
+            )
+            ->join('service_types as st', 'st.id', '=', 'f.service_type_id')
+            ->join('registrations as r', 'r.id', '=', 'f.registration_id')
+            ->join('teams as t', 't.id', '=', 'r.team_id')
+            ->join('students as s', 's.id', '=', 'r.student_id')
+            ->where('f.paid', '=', 0)
+            ->orderBy('t.id')
+            ->orderBy('s.name')
+            ->orderBy('f.due_date');
+
+        if ($request->has(['start_date', 'end_date'])) {
+            $query->whereBetween('f.due_date', [$request->start_date, $request->end_date]);
+        } else {
+            $query->whereDate('f.due_date', '>', now());
+        }
+
+        if ($request->filled('team')) {
+            $query->where('t.id', '=', $request->team);
+        }
+
+        $defaulters = $query->get();
+
+        $pdf = Pdf::loadView('export.defaulters', compact('defaulters', 'request'))
+            ->setPaper('A4', 'landscape');
+
+        return $pdf->download('defaulters.pdf');
+    }
+
     /** Relatório financeiro por turma */
     public function reportFinancial(Team $team)
     {

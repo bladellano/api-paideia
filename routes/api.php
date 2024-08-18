@@ -70,6 +70,7 @@ Route::get('exports/registration-statement/{student}/team/{team}', [ExportContro
 Route::get('exports/student-report-card/{student}/team/{team}', [ExportController::class, 'studentReportCard']);
 Route::get('exports/transfer-report/{team}/start_date/{start_date}/end_date/{end_date}', [ExportController::class, 'transferReport']);
 Route::get('exports/annual-performance-report/{team}', [ExportController::class, 'annualPerformanceReport']);
+Route::get('exports/defaulters', [ExportController::class, 'defaulters']);
 
 /** Middleware */
 Route::group(['middleware' => ['apiJwt']], function () {
