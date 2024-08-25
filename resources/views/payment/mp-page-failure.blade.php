@@ -1,7 +1,7 @@
 @include('payment.header')
 
 <body>
-    <div class="container mt-5 mb-5">
+    <div class="container mt-5 mb-5 py-5">
         <div class="alert alert-danger text-center" role="alert">
             <h2 class="alert-heading">Falha no pagamento!</h2>
         </div>

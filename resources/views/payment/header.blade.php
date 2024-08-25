@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Efetuar Pagamento</title>
+    <title>Bem-vindo ao Sistema de Pagamentos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <style>
@@ -41,7 +41,7 @@
 
         /* Estilo para o Hero com efeito Parallax */
         .hero {
-            height: 500px;
+            height: 350px;
             background-image: url({{ asset('images/hero-banner.png') }});
             background-attachment: fixed;
             background-position: bottom;
@@ -62,7 +62,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(68, 134, 59, 0.5);
+
         }
 
         .hero h1 {

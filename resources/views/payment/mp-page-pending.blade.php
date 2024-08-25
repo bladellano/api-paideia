@@ -1,7 +1,7 @@
 @include('payment.header')
 
 <body>
-    <div class="container mt-5 mb-5">
+    <div class="container mt-5 mb-5 py-5">
         <div class="alert alert-warning text-center" role="alert">
             <h2 class="alert-heading">Pagamento Pendente!</h2>
         </div>

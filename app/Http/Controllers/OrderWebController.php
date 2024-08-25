@@ -7,22 +7,22 @@ use Illuminate\Http\Request;
 use App\Services\MercadoPagoOrder;
 use App\Services\MercadoPagoService;
 
-class OrderController extends Controller
+class OrderWebController extends Controller
 {
 
     public function pendingPayment(Request $request)
     {
-        return view('payment.mp-page-pending', compact($request));
+        return view('payment.mp-page-pending');
     }
 
     public function failurePayment(Request $request)
     {
-        return view('payment.mp-page-failure', compact($request));
+        return view('payment.mp-page-failure');
     }
 
     public function successPayment(Request $request)
     {
-        if ($request->status != 'approved')
+        if (!isset($request->status) && $request->status != 'approved')
             return view('payment.mp-page-failure');
 
         $mp = (new MercadoPagoOrder(new MercadoPagoService()))->showPreference($request->preference_id);
