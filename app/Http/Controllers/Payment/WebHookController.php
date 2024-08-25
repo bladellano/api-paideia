@@ -4,41 +4,39 @@ namespace App\Http\Controllers\Payment;
 
 use App\Models\Financial;
 use Illuminate\Http\Request;
+use App\Services\MercadoPagoOrder;
 use App\Http\Controllers\Controller;
+use App\Services\MercadoPagoService;
 
 class WebHookController extends Controller
 {
     public function order(Request $request)
     {
-
         $response = $request->all();
 
-        \Illuminate\Support\Facades\Log::info(print_r($response, 1));
+        #\Illuminate\Support\Facades\Log::info(print_r($response, 1));
 
-        return $response;
+        $pagamento_id = $response['data_id'];
 
-        dd($response);
+        $mp = (new MercadoPagoOrder(new MercadoPagoService()))->showPayment($pagamento_id);
 
-        if (!$response)
-            return;
+        $financial = Financial::find($mp['items'][0]['id']);
 
-        if ($response['type'] == 'order.paid') {
+        if ($financial && $mp['status'] == 'approved') { // status=rejected
 
-            $code = $response['data']['code'];
+            $financial->paid = 1;
+            $financial->gateway_response = $mp;
+            $financial->pay_day = date('Y-m-d');
+            $financial->save();
 
-            /** 2 - Algo de errado aconteceu, aferir! */
-            $status = $response['data']['status'] == 'paid' ? 1 : 2;
+        } else if ($financial) {
 
-            $vtData = [
-                'paid' => $status,
-                'pay_day' => $status == 1 ? date('Y-m-d') : NULL,
-                'gateway_response' => json_encode($response),
-            ];
-
-            Financial::find($code)->update($vtData);
+            $financial->gateway_response = $mp;
+            $financial->save();
         }
 
-        // Log para depuração (opcional, remova em produção)
-        \Illuminate\Support\Facades\Log::info('Pagar.me Webhook Received: ' . "Id: {$response['id']} / Code: {$response['data']['code']} / Status: {$response['data']['status']}",);
+        \Illuminate\Support\Facades\Log::info('MP: ' . "FinancialId: ". $mp['items'][0]['id'] ." / Status: {$mp['status']}\n");
+
+        return $response;
     }
 }

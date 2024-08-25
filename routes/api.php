@@ -29,6 +29,15 @@ use App\Http\Controllers\{
 use App\Http\Controllers\Payment\OrderController;
 use App\Http\Controllers\Payment\WebHookController;
 
+//! Mercado pago
+Route::post('mercadopago/preference/{financial}', [OrderController::class, 'storePreference']);
+Route::get('mercadopago/preference/{uuid}', [OrderController::class, 'getPreference']);
+Route::get('mercadopago/customers', [OrderController::class, 'customers']);
+Route::get('mercadopago/payment/{id}', [OrderController::class, 'getPayment']);
+Route::get('mercadopago/payments', [OrderController::class, 'payments']);
+
+
+
 //** Gateway de pagamento */
 
 Route::post('payment/orders', [OrderController::class, 'create'])->name('api.payment.orders.store');
