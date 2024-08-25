@@ -13,7 +13,10 @@ class WebHookController extends Controller
 
         $response = $request->all();
 
+        \Illuminate\Support\Facades\Log::info(print_r($response, 1));
+
         return $response;
+
         dd($response);
 
         if (!$response)
