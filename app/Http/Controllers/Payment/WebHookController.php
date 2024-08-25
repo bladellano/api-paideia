@@ -13,6 +13,8 @@ class WebHookController extends Controller
 
         $response = $request->all();
 
+        dd($response);
+
         if (!$response)
             return;
 
