@@ -7,14 +7,14 @@ use Illuminate\Http\Request;
 use App\Services\MercadoPagoOrder;
 use App\Services\MercadoPagoService;
 use App\Http\Controllers\Controller;
+use App\Notifications\PaymentStatusNotification;
+use Illuminate\Support\Facades\Notification;
 
 class WebHookController extends Controller
 {
     public function order(Request $request)
     {
         $response = $request->all();
-
-        #\Illuminate\Support\Facades\Log::info(print_r($response, 1));
 
         $pagamento_id = $response['data_id'];
 
@@ -37,8 +37,19 @@ class WebHookController extends Controller
             $financial->save();
         }
 
-        \Illuminate\Support\Facades\Log::info('MP: ' . "FinancialId: ". $financial_id ." / Status: {$mp['status']}\n");
+        $message = 'MP: ' . "FinancialId: " . $financial_id . " / Status: {$mp['status']}\n";
+        $this->sendEmailNotification($message);
+
+        \Illuminate\Support\Facades\Log::info($message);
 
         return $response;
+    }
+
+    /**
+     * Função para enviar e-mail de notificação
+     */
+    private function sendEmailNotification($message)
+    {
+        Notification::route('mail', 'dellanosites@gmail.com')->notify(new PaymentStatusNotification($message));
     }
 }
