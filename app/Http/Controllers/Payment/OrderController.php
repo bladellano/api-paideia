@@ -9,6 +9,7 @@ use App\Services\MercadoPagoOrder;
 class OrderController extends Controller
 {
     protected $mercadoPagoOrder;
+    protected $idPaymentTicket = 4;
 
     public function __construct(MercadoPagoOrder $mercadoPagoOrder)
     {
@@ -38,14 +39,10 @@ class OrderController extends Controller
     public function storePreference(Financial $financial)
     {
 
-        $response = json_decode($financial->gateway_response);
-
-        /** Verifica se ja existe uma preferencia gravada na pendencia financeira. */
-        if (!empty($financial->gateway_response) && $response instanceof \stdClass && isset($response->init_point))
-            return $financial->gateway_response;
-
         $due_date = mb_strtoupper(\Carbon\Carbon::parse($financial->due_date)->locale('pt_BR')->translatedFormat('F/Y'));
         $quota = str_pad($financial->quota ?? '00', 2, '0', STR_PAD_LEFT);
+        $value = $financial->payment_type == $this->idPaymentTicket ? ($financial->value + 4.49) : $financial->value;
+
         $postData = [
             "items" => [
                 [
@@ -53,7 +50,7 @@ class OrderController extends Controller
                     "title" => "#{$financial->id} [{$quota}] - {$due_date} | " . mb_strtoupper($financial->registration->student->name) . " | " . mb_strtoupper($financial->registration->team->name),
                     "quantity" => 1,
                     "currency_id" => "BRL",
-                    "unit_price" => $financial->value
+                    "unit_price" => $value
                 ]
             ],
             "back_urls" => [
