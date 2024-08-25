@@ -36,13 +36,6 @@ Route::get('mercadopago/customers', [OrderController::class, 'customers']);
 Route::get('mercadopago/payment/{id}', [OrderController::class, 'getPayment']);
 Route::get('mercadopago/payments', [OrderController::class, 'payments']);
 
-
-
-//** Gateway de pagamento */
-
-Route::post('payment/orders', [OrderController::class, 'create'])->name('api.payment.orders.store');
-Route::get('payment/orders', [OrderController::class, 'index']);
-
 //** Gateway de pagamento: webhook */
 Route::post('webhook/order', [WebHookController::class, 'order']);
 

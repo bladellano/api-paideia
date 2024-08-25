@@ -2,20 +2,16 @@
 
 namespace App\Http\Controllers\Payment;
 
-use Illuminate\Http\Request;
-use App\Services\PagarMeOrder;
 use App\Http\Controllers\Controller;
 use App\Models\Financial;
 use App\Services\MercadoPagoOrder;
 
 class OrderController extends Controller
 {
-    protected $pagarMeOrder;
     protected $mercadoPagoOrder;
 
-    public function __construct(PagarMeOrder $pagarMeOrder, MercadoPagoOrder $mercadoPagoOrder)
+    public function __construct(MercadoPagoOrder $mercadoPagoOrder)
     {
-        $this->pagarMeOrder = $pagarMeOrder;
         $this->mercadoPagoOrder = $mercadoPagoOrder;
     }
 
@@ -39,7 +35,7 @@ class OrderController extends Controller
         }
     }
 
-    public function storePreference(Financial $financial) //! MERCADO PAGO.
+    public function storePreference(Financial $financial)
     {
 
         $response = json_decode($financial->gateway_response);
@@ -78,7 +74,7 @@ class OrderController extends Controller
         }
     }
 
-    public function customers() //! MERCADO PAGO.
+    public function customers()
     {
         try {
             $data = $this->mercadoPagoOrder->showCustomers();
@@ -88,47 +84,11 @@ class OrderController extends Controller
         }
     }
 
-    public function payments() //! MERCADO PAGO.
+    public function payments()
     {
         try {
             $data = $this->mercadoPagoOrder->showPayments();
             return response()->json($data);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 404);
-        }
-    }
-
-    public function index()
-    {
-        try {
-            $order = $this->pagarMeOrder->getAll();
-            return response()->json($order);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 404);
-        }
-    }
-
-    public function create(Request $request)
-    {
-
-        try {
-
-            $order = $this->pagarMeOrder->createOrder($request->all());
-
-            Financial::find($order['code'])->update(['gateway_response' => json_encode($order)]);
-            /** Atualiza o financial com response da api */
-
-            return response()->json($order, 201);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
-
-    public function show($id)
-    {
-        try {
-            $order = $this->pagarMeOrder->getOrder($id);
-            return response()->json($order);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 404);
         }

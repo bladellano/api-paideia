@@ -29,8 +29,6 @@ class Financial extends Model
         'pay_day' => 'datetime:d/m/Y',
     ];
 
-    protected $appends = ['urlcc', 'urlticket'];
-
     public function registration()
     {
         return $this->belongsTo(Registration::class)
@@ -61,16 +59,5 @@ class Financial extends Model
             if (auth()->check())
                 $course->user_id = auth()->id();
         });
-    }
-
-    // Acessores para a URL_BASE para o gateway de pagamento.
-    public function getUrlccAttribute()
-    {
-        return config('app.url') . "/payment/create-order/{$this->getAttribute('id')}";
-    }
-
-    public function getUrlticketAttribute()
-    {
-        return config('app.url') . "/payment/create-order-ticket/{$this->getAttribute('id')}";
     }
 }
