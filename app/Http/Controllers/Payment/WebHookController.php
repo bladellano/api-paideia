@@ -24,20 +24,36 @@ class WebHookController extends Controller
 
         $financial = Financial::find($financial_id);
 
+        $color = "#FFA500";
+
         if ($financial && $mp['status'] == 'approved') { // status=rejected
 
+            $color = "#008000";
             $financial->paid = 1;
             $financial->gateway_response = $mp;
-            $financial->pay_day = date('Y-m-d');
+            $financial->pay_day = date('Y-m-d H:m:s');
             $financial->save();
-
         } else if ($financial) {
 
             $financial->gateway_response = $mp;
             $financial->save();
         }
 
-        $message = 'MP: ' . "FinancialId: " . $financial_id . " / Status: {$mp['status']}\n";
+        $message = "<p><b>DETALHES INTEGRAÇÃO MP:</b></p>";
+        $message .= "<b>ID_PAIDEIA:</b> {$financial_id}<br/>";
+        $message .= "<b>ID_PAGTO_MP:</b> {$pagamento_id}<br/><hr/>";
+
+        $message .= "<b>STATUS INTEGRAÇÃO MP:</b> <span style='color:{$color}'>{$mp['status']}</span><br/>";
+        $message .= "<b>PAGO EM:</b> " . \Carbon\Carbon::parse($financial->pay_day)->format('d/m/Y H:m:s') . "<br/>";
+        $message .= "<b>FORMA DE PAGTO:</b> " . mb_strtoupper($financial->paymentType->name) . "<br/><hr/>";
+
+        $message .= "<b>MATRÍCULA:</b> {$financial->registration_id}<br/>";
+        $message .= "<b>ALUNO:</b> " . mb_strtoupper($financial->registration->student->name) . "<br/>";
+        $message .= "<b>PARCELA:</b> " . str_pad($financial->quota ?? '00', 2, '0', STR_PAD_LEFT) . "<br/>";
+        $message .= "<b>VENCIMENTO:</b> " . mb_strtoupper(\Carbon\Carbon::parse($financial->due_date)->locale('pt_BR')->translatedFormat('F/Y')) . " <br/>";
+        $message .= "<b>VALOR:</b> R$ " . number_format($financial->value, 2, ',', '.') . "<br/>";
+        $message .= "<b>OBS.:</b> {$financial->observations}<br/><br/>";
+
         $this->sendEmailNotification($message);
 
         \Illuminate\Support\Facades\Log::info($message);
@@ -50,6 +66,6 @@ class WebHookController extends Controller
      */
     private function sendEmailNotification($message)
     {
-        Notification::route('mail', 'dellanosites@gmail.com')->notify(new PaymentStatusNotification($message));
+        Notification::route('mail', ['dellanosites@gmail.com', 'bladellano@gmail.com', 'diretor@paideiaeducacional.com'])->notify(new PaymentStatusNotification($message));
     }
 }

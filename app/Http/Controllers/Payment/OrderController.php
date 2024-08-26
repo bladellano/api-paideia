@@ -41,13 +41,14 @@ class OrderController extends Controller
 
         $due_date = mb_strtoupper(\Carbon\Carbon::parse($financial->due_date)->locale('pt_BR')->translatedFormat('F/Y'));
         $quota = str_pad($financial->quota ?? '00', 2, '0', STR_PAD_LEFT);
-        $value = $financial->payment_type == $this->idPaymentTicket ? ($financial->value + 4.49) : $financial->value;
+        $rate = config('services.mercadopago.rate');
+        $value = $financial->payment_type == $this->idPaymentTicket ? ($financial->value + $rate) : $financial->value;
 
         $postData = [
             "items" => [
                 [
                     "id" => $financial->id,
-                    "title" => "#{$financial->id} [{$quota}] - {$due_date} | " . mb_strtoupper($financial->registration->student->name) . " | " . mb_strtoupper($financial->registration->team->name),
+                    "title" => "#{$financial->id} - PARC. DE N.º {$quota} - {$due_date} | " . mb_strtoupper($financial->registration->student->name) . " | " . mb_strtoupper($financial->registration->team->name),
                     "quantity" => 1,
                     "currency_id" => "BRL",
                     "unit_price" => $value

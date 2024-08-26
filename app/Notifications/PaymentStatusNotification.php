@@ -42,8 +42,8 @@ class PaymentStatusNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Paideia - Notificação de Pagamento')
-            ->line($this->message)
+            ->subject('Paideia::Notificação de Pagamento')
+            ->line(new \Illuminate\Support\HtmlString($this->message))
             ->line('Obrigado!');
     }
 
