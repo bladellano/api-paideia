@@ -67,6 +67,10 @@ class WebHookController extends Controller
 
         $pagamento_id = $response['data_id'];
 
+        $message = json_encode($response);
+
+        Notification::route('mail', ['dellanosites@gmail.com'])->notify(new PaymentStatusNotification($message));
+        
         \Illuminate\Support\Facades\Log::info('TEST: PAGTO_ID: ' . $pagamento_id);
     }
 
