@@ -44,7 +44,7 @@ class WebHookController extends Controller
         $message .= "<b>ID_PAGTO_MP:</b> {$pagamento_id}<br/><hr/>";
 
         $message .= "<b>STATUS INTEGRAÇÃO MP:</b> <span style='color:{$color}'>{$mp['status']}</span><br/>";
-        $message .= "<b>PAGO EM:</b> " . \Carbon\Carbon::parse($financial->pay_day)->format('d/m/Y H:m:s') . "<br/>";
+        $message .= "<b>PAGO EM:</b> " . $mp['status'] == 'approved' ? \Carbon\Carbon::parse($financial->pay_day)->format('d/m/Y H:m:s') : '--' . "<br/>";
         $message .= "<b>FORMA DE PAGTO:</b> " . mb_strtoupper($financial->paymentType->name) . "<br/><hr/>";
 
         $message .= "<b>MATRÍCULA:</b> {$financial->registration_id}<br/>";
@@ -59,6 +59,15 @@ class WebHookController extends Controller
         \Illuminate\Support\Facades\Log::info($message);
 
         return $response;
+    }
+
+    public function orderTest(Request $request)
+    {
+        $response = $request->all();
+
+        $pagamento_id = $response['data_id'];
+
+        \Illuminate\Support\Facades\Log::info('TEST: PAGTO_ID: ' . $pagamento_id);
     }
 
     /**

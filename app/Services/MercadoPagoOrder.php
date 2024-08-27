@@ -11,6 +11,11 @@ class MercadoPagoOrder
         $this->mercadoPagoService = $mercadoPagoService;
     }
 
+    public function createTicket($orderData)
+    {
+        return $this->mercadoPagoService->request('post', '/v1/payments', $orderData);
+    }
+
     public function createPreference($orderData)
     {
         return $this->mercadoPagoService->request('post', '/checkout/preferences', $orderData);

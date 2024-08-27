@@ -30,6 +30,7 @@ use App\Http\Controllers\Payment\OrderController;
 use App\Http\Controllers\Payment\WebHookController;
 
 //! Mercado pago
+Route::post('mercadopago/ticket/{financial}', [OrderController::class, 'storeTicket']);
 Route::post('mercadopago/preference/{financial}', [OrderController::class, 'storePreference']);
 Route::get('mercadopago/preference/{uuid}', [OrderController::class, 'getPreference']);
 Route::get('mercadopago/customers', [OrderController::class, 'customers']);
@@ -38,6 +39,7 @@ Route::get('mercadopago/payments', [OrderController::class, 'payments']);
 
 //** Gateway de pagamento: webhook */
 Route::post('webhook/order', [WebHookController::class, 'order']);
+Route::post('webhook/order-test', [WebHookController::class, 'orderTest']);
 
 /** E-mail */
 Route::get('send-mail', [MailController::class, 'index']);

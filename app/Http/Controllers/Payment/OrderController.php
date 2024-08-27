@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Payment;
 
-use App\Http\Controllers\Controller;
 use App\Models\Financial;
 use App\Services\MercadoPagoOrder;
+use App\Http\Controllers\Controller;
 
 class OrderController extends Controller
 {
@@ -32,6 +32,68 @@ class OrderController extends Controller
             $data = $this->mercadoPagoOrder->showPreference($uui);
             return response()->json($data);
         } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 404);
+        }
+    }
+
+    function getFirstAndLastName($fullName)
+    {
+        $nameParts = explode(' ', trim($fullName));
+        $firstName = $nameParts[0];
+
+        $lastName = $nameParts[count($nameParts) - 1];
+
+        return [
+            'first' => mb_strtoupper($firstName),
+            'last' => mb_strtoupper($lastName)
+        ];
+    }
+
+    public function storeTicket(Financial $financial)
+    {
+
+        try {
+
+            if (empty($financial->registration->student->name) || empty($financial->registration->student->email) || empty($financial->registration->student->cpf))
+                throw new \Exception('*Campos que devem possuir informações no cadastro do aluno: nome, e-mail e cpf.');
+
+            $names = $this->getFirstAndLastName($financial->registration->student->name);
+            $quota = str_pad($financial->quota ?? '00', 2, '0', STR_PAD_LEFT);
+            $due_date = mb_strtoupper(\Carbon\Carbon::parse($financial->due_date)->locale('pt_BR')->translatedFormat('F/Y'));
+            $rate = config('services.mercadopago.rate');
+            $value = $financial->value + $rate;
+
+            $postData = [
+                "transaction_amount" => $value,
+                "description" => "#{$financial->id} - PARC. DE N.º {$quota} - {$due_date} | " . mb_strtoupper($financial->registration->student->name) . " | " . mb_strtoupper($financial->registration->team->name),
+                "payment_method_id" => "bolbradesco",
+                "payer" => [
+                    "email" => $financial->registration->student->email,
+                    "first_name" => $names['first'],
+                    "last_name" => $names['last'],
+                    "identification" => [
+                        "type" => "CPF",
+                        "number" => $financial->registration->student->cpf
+                    ],
+                    "address" => [
+                        "zip_code" => "67130450",
+                        "street_name" => $financial->registration->student->naturalness,
+                        "street_number" => "111",
+                        "neighborhood" => "Cidade Nova",
+                        "city" => "Ananindeua",
+                        "federal_unit" => "PA"
+                    ]
+                ]
+            ];
+
+            $data = $this->mercadoPagoOrder->createTicket($postData);
+
+            $financial->gateway_response = $data;
+            $financial->save();
+
+            return response()->json($data);
+        } catch (\Exception $e) {
+
             return response()->json(['error' => $e->getMessage()], 404);
         }
     }
