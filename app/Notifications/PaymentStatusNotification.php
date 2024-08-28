@@ -44,7 +44,7 @@ class PaymentStatusNotification extends Notification
         return (new MailMessage)
             ->subject('Paideia::Notificação de Pagamento')
             ->line(new \Illuminate\Support\HtmlString($this->message))
-            ->line('Obrigado!');
+            ->line('Este é um recibo gerado automaticamente. Por favor, não responda a este e-mail.');
     }
 
     /**

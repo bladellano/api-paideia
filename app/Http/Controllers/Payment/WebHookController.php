@@ -106,18 +106,25 @@ class WebHookController extends Controller
         $dueDate = $financial ? mb_strtoupper(Carbon::parse($financial->due_date)->locale('pt_BR')->translatedFormat('F/Y')) : '';
         $value = $financial ? number_format($financial->value, 2, ',', '.') : '0,00';
         $observations = $financial ? $financial->observations : '';
+        $team = $financial->registration->team->name ? $financial->registration->team->name : ''; 
+        $student_id = $financial ? $financial->registration->student->id : ''; 
 
-        return "<p><b>DETALHES INTEGRAÇÃO MP:</b></p>
-                <b>ID_PAIDEIA:</b> {$financial_id}<br/>
-                <b>ID_PAGTO_MP:</b> {$pagamento_id}<br/><hr/>
-                <b>STATUS INTEGRAÇÃO MP:</b> <span style='color:{$color}'>{$mp['status']}</span><br/>
-                <b>PAGO EM:</b> {$payDay}<br/>
-                <b>FORMA DE PAGTO:</b> {$paymentType}<br/><hr/>
-                <b>MATRÍCULA:</b> {$registrationId}<br/>
-                <b>ALUNO:</b> {$studentName}<br/>
-                <b>PARCELA:</b> {$quota}<br/>
-                <b>VENCIMENTO:</b> {$dueDate} <br/>
-                <b>VALOR:</b> R$ {$value}<br/>
-                <b>OBS.:</b> {$observations}<br/><br/>";
+        return view('emails.payment_notification', [
+            'financial_id' => $financial_id,
+            'pagamento_id' => $pagamento_id,
+            'color' => $color,
+            'mp' => $mp,
+            'pay_day' => $payDay,
+            'payment_type' => $paymentType,
+            'registration_id' => $registrationId,
+            'student_name' => $studentName,
+            'quota' => $quota,
+            'team' => $team,
+            'due_date' => $dueDate,
+            'value' => $value,
+            'observations' => $observations,
+            'student_id' => $student_id,
+        ])->render();
+
     }
 }
