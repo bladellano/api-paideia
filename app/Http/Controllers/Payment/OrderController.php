@@ -55,7 +55,7 @@ class OrderController extends Controller
         try {
 
             if (empty($financial->registration->student->name) || empty($financial->registration->student->email) || empty($financial->registration->student->cpf))
-                throw new \Exception('*Campos que devem possuir informações no cadastro do aluno: nome, e-mail e cpf.');
+                throw new \Exception('Por favor, verifique se os dados dos alunos, como nome, e-mail e CPF, estão preenchidos.');
 
             $names = $this->getFirstAndLastName($financial->registration->student->name);
             $quota = str_pad($financial->quota ?? '00', 2, '0', STR_PAD_LEFT);

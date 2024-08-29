@@ -1,11 +1,15 @@
-<p><b>Detalhes Integração Mercado Pago:</b></p>
+<p><b>Webhook - Detalhes Integração Mercado Pago:</b></p>
 
 <b>ID_PENDENCIA_FINANCEIRA:</b> #{{ $financial_id }}<br/>
-<b>ID_PAGTO_MP:</b> {{ $pagamento_id }}<br/><hr style="border: 1px dashed #eee;"/>
+<b>ID_PAGTO_MP:</b> {{ $pagamento_id }}<br/>
 
-<b>Status da Integração:</b> <span style="color:{{ $color }}">{{ $mp['status'] }}</span><br/>
+<hr style="border: 1px dashed #eee;"/>
+
+<b>Andamento do Pagamento:</b> <span style="color:{{ $color }}">{{ $mp['status'] }}</span><br/>
 <b>Pago em:</b> {{ $pay_day }}<br/>
-<b>Forma de Pagamento:</b> {{ $payment_type }}<br/><hr style="border: 1px dashed #eee;"/>
+<b>Forma de Pagamento:</b> {{ $payment_type }}<br/>
+
+<hr style="border: 1px dashed #eee;"/>
 
 <b>Matrícula:</b> {{ $registration_id }}<br/>
 <b>Turma:</b> {{ $team }}<br/>
