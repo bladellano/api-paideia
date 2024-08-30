@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Payment;
 
+use Carbon\Carbon;
 use App\Models\Financial;
+use Illuminate\Http\Request;
 use App\Services\MercadoPagoOrder;
 use App\Http\Controllers\Controller;
 
@@ -49,7 +51,7 @@ class OrderController extends Controller
         ];
     }
 
-    public function storeTicket(Financial $financial)
+    public function storeTicket(Financial $financial, Request $request)
     {
 
         try {
@@ -85,6 +87,11 @@ class OrderController extends Controller
                     ]
                 ]
             ];
+
+            if(isset($request->date_of_expiration) && !empty($request->date_of_expiration)) {
+                $postData['date_of_expiration'] = Carbon::parse($request->date_of_expiration, 'UTC')->format('Y-m-d\TH:i:s.vP');
+                $postData['external_reference'] = (string)$financial->id; //@TODO Significa que o boleto tem um vencimento customizado.
+            }
 
             $data = $this->mercadoPagoOrder->createTicket($postData);
 
