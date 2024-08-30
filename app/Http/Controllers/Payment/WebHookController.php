@@ -34,7 +34,11 @@ class WebHookController extends Controller
                 $this->updateFinancialStatus($financial, $mp);
 
             $message = $this->buildNotificationMessage($financial, $mp, $pagamento_id, $financial_id);
-            $this->sendEmailNotification($message);
+
+            $email['message'] = $message;
+            $email['subject'] = " - #{$financial->id} | " . mb_strtoupper($financial->registration->student->name) . " | R$ " . number_format($financial->value, 2, ',', '.');
+            
+            $this->sendEmailNotification($email);
             Log::info($message);
 
             return response()->json(['message' => 'Processado com sucesso.'], Response::HTTP_OK);
@@ -57,14 +61,17 @@ class WebHookController extends Controller
         $mp = (new MercadoPagoOrder(new MercadoPagoService()))->showPayment($pagamento_id);
         $message = json_encode($response);
 
-        Notification::route('mail', 'dellanosites@gmail.com')->notify(new PaymentStatusNotification($message));
+        $email['message'] = $message;
+        $email['subject'] = "TEST - ID: {$pagamento_id}";
+
+        Notification::route('mail', 'dellanosites@gmail.com')->notify(new PaymentStatusNotification($email));
         Log::info("TEST: PAGTO_ID: {$pagamento_id} / STATUS: {$mp['status']} / DESCR.: {$mp['description']}");
     }
 
-    private function sendEmailNotification(string $message): void
+    private function sendEmailNotification(array $email): void
     {
         Notification::route('mail', ['dellanosites@gmail.com', 'bladellano@gmail.com', 'diretor@paideiaeducacional.com'])
-            ->notify(new PaymentStatusNotification($message));
+            ->notify(new PaymentStatusNotification($email));
     }
 
     private static function parseStringToId(string $string): ?int
@@ -121,6 +128,7 @@ class WebHookController extends Controller
             'quota' => $quota,
             'team' => $team,
             'due_date' => $dueDate,
+            'due_date_raw' => Carbon::parse($financial->due_date)->locale('pt_BR')->translatedFormat('d/m/Y'),
             'value' => $value,
             'observations' => $observations,
             'student_id' => $student_id,

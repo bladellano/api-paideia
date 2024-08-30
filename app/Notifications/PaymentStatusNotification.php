@@ -10,16 +10,16 @@ class PaymentStatusNotification extends Notification
 {
     use Queueable;
 
-    private $message;
+    private $email;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($message)
+    public function __construct(array $email)
     {
-        $this->message = $message;
+        $this->email = $email;
     }
 
     /**
@@ -41,9 +41,10 @@ class PaymentStatusNotification extends Notification
      */
     public function toMail($notifiable)
     {
+
         return (new MailMessage)
-            ->subject('Paideia::Notificação de Pagamento')
-            ->line(new \Illuminate\Support\HtmlString($this->message))
+            ->subject('Paideia::Notificação de Pagamento ' . $this->email['subject'])
+            ->line(new \Illuminate\Support\HtmlString($this->email['message']))
             ->line('Este é um recibo gerado automaticamente. Por favor, não responda a este e-mail.');
     }
 
