@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Notifications\UserLoggedIn;
+use Illuminate\Support\Facades\Notification;
 
 class AuthController extends Controller
 {
@@ -17,6 +19,11 @@ class AuthController extends Controller
         if (!$token = auth('api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+
+        $user = auth('api')->user();
+
+        Notification::route('mail', 'dellanosites@gmail.com')
+            ->notify(new UserLoggedIn($user));
 
         return $this->respondWithToken($token);
     }

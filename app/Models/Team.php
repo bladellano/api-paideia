@@ -42,13 +42,14 @@ class Team extends Model
     protected $casts = [
         'start_date' => 'date:d/m/Y',
         'end_date' => 'date:d/m/Y',
+        'created_at' => 'date:d/m/Y',
     ];
 
-    public function getCreatedAtAttribute($value)
-    {
-        \Carbon\Carbon::setLocale('pt_BR');
-        return Carbon::parse($value)->diffForHumans();
-    }
+    #public function getCreatedAtAttribute($value)
+    #{
+    #    \Carbon\Carbon::setLocale('pt_BR');
+    #    return Carbon::parse($value)->diffForHumans();
+    #}
 
     public function getDisciplines($teamId)
     {

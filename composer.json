@@ -15,7 +15,6 @@
         "laravel/tinker": "^2.7",
         "maatwebsite/excel": "^3.1",
         "misterioso013/cpf": "^1.0",
-        "pagarme/pagarme-php": "^4.3",
         "psr/simple-cache": "^2.0",
         "tymon/jwt-auth": "^2.0"
     },
