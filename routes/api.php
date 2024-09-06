@@ -17,6 +17,7 @@ use App\Http\Controllers\{
     ExportController,
     FinancialController,
     GridTemplateController,
+    IndicatorController,
     ReportController,
     MailController,
     PaymentTypeController,
@@ -28,6 +29,9 @@ use App\Http\Controllers\{
 
 use App\Http\Controllers\Payment\OrderController;
 use App\Http\Controllers\Payment\WebHookController;
+
+//! Dashboard indicadores
+Route::get('indicators/number-registrations-per-month', [IndicatorController::class, 'numberRegistrationsPerMonth']);
 
 //! Mercado pago
 Route::post('mercadopago/ticket/{financial}', [OrderController::class, 'storeTicket']);
