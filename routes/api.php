@@ -32,6 +32,8 @@ use App\Http\Controllers\Payment\WebHookController;
 
 //! Dashboard indicadores
 Route::get('indicators/number-registrations-per-month', [IndicatorController::class, 'numberRegistrationsPerMonth']);
+Route::get('indicators/number-students-per-month', [IndicatorController::class, 'numberStudentsPerMonth']);
+Route::get('indicators/number-students-per-teams', [IndicatorController::class, 'numberStudentsPerTeams']);
 
 //! Mercado pago
 Route::post('mercadopago/ticket/{financial}', [OrderController::class, 'storeTicket']);
