@@ -21,7 +21,7 @@ class MercadoPagoService
     public function request($method, $endpoint, $data = [])
     {
 
-        // @TODO serve para nao repetir a mesma requisicao e gerar o mesmo boleto com mesmos dados.
+        //! @TODO evita a repetição da mesma solicitação e a geração de um boleto com os mesmos dados.
         $uuid = Str::uuid()->toString();
 
         $response = Http::withHeaders([
