@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderWebController;
+use App\Http\Controllers\ModuleController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -11,4 +12,5 @@ Route::get('pagamento-sucesso', [OrderWebController::class, 'successPayment'])->
 Route::get('pagamento-falhou', [OrderWebController::class, 'failurePayment'])->name('payment.failure');
 Route::get('pagamento-pendente', [OrderWebController::class, 'pendingPayment'])->name('payment.pending');
 
-
+Route::get('modules/generate-menu', [ModuleController::class, 'generateMenu']);
+Route::resource('modules', ModuleController::class);

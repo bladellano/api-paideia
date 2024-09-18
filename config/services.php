@@ -43,4 +43,8 @@ return [
         'rate' => env('MP_RATE'),
     ],
 
+    'ge' => [
+        'modules_acquired' => env('MODULES_ACQUIRED')
+    ],
+
 ];
