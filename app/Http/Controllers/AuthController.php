@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Traits\MenuTrait;
 use Illuminate\Http\Request;
 use App\Notifications\UserLoggedIn;
+use App\Traits\DataClientTrait;
 use Illuminate\Support\Facades\Notification;
 
 class AuthController extends Controller
 {
 
   use MenuTrait;
+  use DataClientTrait;
 
   /**
    * Get a JWT via given credentials.
@@ -59,6 +61,7 @@ class AuthController extends Controller
       'access_token' => $token,
       'token_type' => 'bearer',
       'expires_in' => auth('api')->factory()->getTTL() * 60,
+      'data_client' => $this->getClient(),
       'menu' => $this->generateMenuStructure() // Armazenar a estrutura do menu
     ]);
   }

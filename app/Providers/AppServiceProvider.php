@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
             return new CpfValidator($translator, $data, $rules, $messages);
         });
 
-        if (env('APP_ENV') !== 'local') 
+        if (config('app.env') != 'local') 
             URL::forceScheme('https');
     }
 }

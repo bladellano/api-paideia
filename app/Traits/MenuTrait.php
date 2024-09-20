@@ -8,7 +8,7 @@ trait MenuTrait
 {
 	protected function generateMenuStructure()
 	{
-		// Obtém os módulos adquiridos do arquivo .env
+		/** Obtém os módulos adquiridos do arquivo .env */
 		$modulesEnabledInEnv = config('services.ge.modules_acquired');
 		$arModulesEnabledInEnv = explode(',', $modulesEnabledInEnv);
 

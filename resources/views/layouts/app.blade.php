@@ -20,6 +20,12 @@
                         <a class="nav-link" href="{{ route('modules.index') }}">Módulos</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ route('clients.create') }}">Criar Cliente</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('clients.index') }}">Listar Cliente</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="#">Outras Opções</a>
                     </li>
                 </ul>

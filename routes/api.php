@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
     AuthController,
     BookController,
+    ClientController,
     GridController,
     PoloController,
     TeamController,
@@ -29,6 +30,9 @@ use App\Http\Controllers\{
 
 use App\Http\Controllers\Payment\OrderController;
 use App\Http\Controllers\Payment\WebHookController;
+
+//! Dados do cliente
+Route::get('data-of-client', [ClientController::class, 'getClientData']);
 
 //! Dashboard indicadores
 Route::get('indicators/number-registrations-per-month', [IndicatorController::class, 'numberRegistrationsPerMonth']);
