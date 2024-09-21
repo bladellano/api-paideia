@@ -18,8 +18,6 @@
                 <tr>
                     <th>ID</th>
                     <th>School Name</th>
-                    <th>CNPJ</th>
-                    <th>Address</th>
                     <th>Phones</th>
                     <th>Owner</th>
                     <th>Slogan</th>
@@ -27,6 +25,8 @@
                     <th>Website Name</th>
                     <th>Colored Logo</th>
                     <th>Black/White Logo</th>
+                    <th>Cover</th>
+                    <th>Actions</th> <!-- Adicionando nova coluna para ações -->
                 </tr>
             </thead>
             <tbody>
@@ -34,12 +34,12 @@
                     <tr>
                         <td>{{ $client->id }}</td>
                         <td>{{ $client->school_name }}</td>
-                        <td>{{ $client->cnpj }}</td>
-                        <td>{{ $client->address }}</td>
                         <td>
-                            @foreach ($client->phones as $phone)
-                                {{ $phone }}<br>
-                            @endforeach
+                            @if ($client->phones)
+                                @foreach ($client->phones as $phone)
+                                    {{ $phone }}<br>
+                                @endforeach
+                            @endif
                         </td>
                         <td>{{ $client->owner }}</td>
                         <td>{{ $client->slogan }}</td>
@@ -58,6 +58,28 @@
                             @else
                                 No logo available
                             @endif
+                        </td>
+                        <td>
+                            @if ($client->cover)
+                                <img src="{{ $client->cover }}" alt="Cover" width="100">
+                            @else
+                                No logo available
+                            @endif
+                        </td>
+                        <td>
+
+                          <div class="btn-group" role="group">
+
+                            <a href="{{ route('clients.edit', $client->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                        
+                            <form action="{{ route('clients.destroy', $client->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Are you sure you want to delete this client?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+
+                          </div>
+
                         </td>
                     </tr>
                 @endforeach

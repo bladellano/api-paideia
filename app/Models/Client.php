@@ -19,6 +19,7 @@ class Client extends Model
         'slogan',
         'main_service',
         'website_name',
+        'cover',
         'colored_logo',
         'black_white_logo'
     ];

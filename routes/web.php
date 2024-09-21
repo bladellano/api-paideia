@@ -13,10 +13,16 @@ Route::get('pagamento-sucesso', [OrderWebController::class, 'successPayment'])->
 Route::get('pagamento-falhou', [OrderWebController::class, 'failurePayment'])->name('payment.failure');
 Route::get('pagamento-pendente', [OrderWebController::class, 'pendingPayment'])->name('payment.pending');
 
-Route::get('modules/generate-menu', [ModuleController::class, 'generateMenu']);
-Route::resource('modules', ModuleController::class);
+/** Menu para gerenciar dados do cliente/escola */
 
-Route::get('clients', [ClientController::class, 'index'])->name('clients.index');
-Route::get('clients/create', [ClientController::class, 'create'])->name('clients.create');
-Route::post('clients', [ClientController::class, 'store'])->name('clients.store');
+Route::prefix('admin')->group(function () {
 
+    Route::get('/', function(){
+        return view('modules.create');
+    });
+
+    Route::get('modules/generate-menu', [ModuleController::class, 'generateMenu']); //? Somente teste no insomnia.
+
+    Route::resource('modules', ModuleController::class);
+    Route::resource('clients', ClientController::class);
+});

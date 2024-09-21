@@ -60,6 +60,15 @@ return [
         'name' => 'faker:company'
     ],
     'users' => [
-        'name' => 'faker:name'
+        'name' => 'faker:name',
+        'email' => 'faker:email'
+    ],
+    'polos' => [
+        'email' => 'faker:email',
+        'responsible' => 'faker:name',
+        'name' => 'faker:name',
+        'city' => 'faker:city',
+        'address' => 'faker:address',
+        'phone' => '*:4-7',
     ]
 ];
