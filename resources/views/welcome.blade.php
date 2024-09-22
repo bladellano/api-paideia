@@ -1,1 +1,1 @@
-:: API - PAIDEIA - LIGADA 🌍::
+:: API - GESTÃO ESCOLAR - LIGADA 🌍::
