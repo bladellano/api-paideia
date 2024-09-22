@@ -26,7 +26,7 @@
                         <a class="nav-link" href="{{ route('clients.index') }}">Listar Cliente</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Outras Opções</a>
+                        <a class="nav-link" href="{{ route('admin.logout') }}">Sair</a>
                     </li>
                 </ul>
             </div>

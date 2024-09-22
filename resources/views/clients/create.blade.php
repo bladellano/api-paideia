@@ -39,6 +39,16 @@
             </div>
 
             <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" class="form-control" id="city" name="city" value="{{ old('city') }}">
+            </div>
+
+            <div class="form-group">
+                <label for="average_grade">Average Grade:</label>
+                <input type="text" class="form-control" id="average_grade" name="average_grade" value="{{ old('average_grade') }}">
+            </div>
+
+            <div class="form-group">
                 <label for="phones">Phones (comma-separated):</label>
                 <input type="text" class="form-control" id="phones" name="phones" value="{{ old('phones') }}">
             </div>

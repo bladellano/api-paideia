@@ -21,7 +21,9 @@ class Client extends Model
         'website_name',
         'cover',
         'colored_logo',
-        'black_white_logo'
+        'black_white_logo',
+        'average_grade',
+        'city'
     ];
 
     // Cast 'phones' as an array (JSON)

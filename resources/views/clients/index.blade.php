@@ -26,7 +26,7 @@
                     <th>Colored Logo</th>
                     <th>Black/White Logo</th>
                     <th>Cover</th>
-                    <th>Actions</th> <!-- Adicionando nova coluna para ações -->
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
