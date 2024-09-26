@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Payment;
 
-use App\Models\Financial;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Log;
+use App\Models\Financial;
 use App\Services\MercadoPagoOrder;
 use App\Http\Controllers\Controller;
 use App\Services\MercadoPagoService;
-use Illuminate\Support\Facades\Notification;
 use App\Notifications\PaymentStatusNotification;
-use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
-use Illuminate\Http\JsonResponse;
 
 class WebHookController extends Controller
 {

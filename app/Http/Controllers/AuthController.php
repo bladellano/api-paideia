@@ -27,9 +27,10 @@ class AuthController extends Controller
     }
 
     $user = auth('api')->user();
+    $ip = $request->ip();
 
     Notification::route('mail', 'dellanosites@gmail.com')
-      ->notify(new UserLoggedIn($user));
+      ->notify(new UserLoggedIn($user, $ip));
 
     return $this->respondWithToken($token);
   }
