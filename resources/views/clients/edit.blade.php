@@ -78,37 +78,56 @@
                     value="{{ old('main_service', $client->main_service) }}">
             </div>
 
-            <div class="form-group">
-                <label for="website_name">Website Name:</label>
-                <input type="text" class="form-control" id="website_name" name="website_name"
-                    value="{{ old('website_name', $client->website_name) }}">
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <label for="website_name">Website Name:</label>
+                    <input type="text" class="form-control" id="website_name" name="website_name"
+                        value="{{ old('website_name', $client->website_name) }}">
+                </div>
+    
+                <div class="form-group col-md-4">
+                    <label for="main_color">Main Color:</label>
+                    <input type="color" class="form-control" id="main_color" name="main_color"
+                        value="{{ old('main_color', $client->main_color) }}">
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label for="secondary_color">Secondary Color:</label>
+                    <input type="color" class="form-control" id="secondary_color" name="secondary_color"
+                        value="{{ old('secondary_color', $client->secondary_color) }}">
+                </div>
+    
             </div>
 
-            <div class="form-group">
-                <label for="cover">Cover:</label>
-                <input type="file" class="form-control-file" id="cover" name="cover">
-                @if ($client->cover)
-                    <img src="{{ $client->cover }}" alt="Colored Logo" width="100">
-                @endif
+            <hr>
+
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <label for="cover">Cover:</label>
+                    <input type="file" class="form-control-file" id="cover" name="cover">
+                    @if ($client->cover)
+                        <img src="{{ $client->cover }}" alt="Colored Logo" width="100">
+                    @endif
+                </div>
+    
+                <div class="form-group col-md-4">
+                    <label for="colored_logo">Colored Logo:</label>
+                    <input type="file" class="form-control-file" id="colored_logo" name="colored_logo">
+                    @if ($client->colored_logo)
+                        <img src="{{ $client->colored_logo }}" alt="Colored Logo" width="100">
+                    @endif
+                </div>
+    
+                <div class="form-group col-md-4">
+                    <label for="black_white_logo">Black/White Logo:</label>
+                    <input type="file" class="form-control-file" id="black_white_logo" name="black_white_logo">
+                    @if ($client->black_white_logo)
+                        <img src="{{ $client->black_white_logo }}" alt="Black/White Logo" width="100">
+                    @endif
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="colored_logo">Colored Logo:</label>
-                <input type="file" class="form-control-file" id="colored_logo" name="colored_logo">
-                @if ($client->colored_logo)
-                    <img src="{{ $client->colored_logo }}" alt="Colored Logo" width="100">
-                @endif
-            </div>
-
-            <div class="form-group">
-                <label for="black_white_logo">Black/White Logo:</label>
-                <input type="file" class="form-control-file" id="black_white_logo" name="black_white_logo">
-                @if ($client->black_white_logo)
-                    <img src="{{ $client->black_white_logo }}" alt="Black/White Logo" width="100">
-                @endif
-            </div>
-
-            <button type="submit" class="btn btn-primary">Update</button>
+            <button type="submit" class="btn btn-primary mt-4">Update</button>
         </form>
     </div>
 @endsection

@@ -27,10 +27,9 @@ class AuthController extends Controller
     }
 
     $user = auth('api')->user();
-    $ip = $request->ip();
 
     Notification::route('mail', 'dellanosites@gmail.com')
-      ->notify(new UserLoggedIn($user, $ip));
+      ->notify(new UserLoggedIn($user, $request->ip()));
 
     return $this->respondWithToken($token);
   }
@@ -62,7 +61,6 @@ class AuthController extends Controller
       'access_token' => $token,
       'token_type' => 'bearer',
       'expires_in' => auth('api')->factory()->getTTL() * 60,
-      'data_client' => $this->getClient(),
       'menu' => $this->generateMenuStructure() // Armazenar a estrutura do menu
     ]);
   }
