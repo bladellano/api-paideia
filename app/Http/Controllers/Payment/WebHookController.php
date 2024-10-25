@@ -70,7 +70,7 @@ class WebHookController extends Controller
 
     private function sendEmailNotification(array $email): void
     {
-        Notification::route('mail', ['dellanosites@gmail.com', 'bladellano@gmail.com', 'diretor@paideiaeducacional.com'])
+        Notification::route('mail', ['dellanosites@gmail.com', 'diretor@paideiaeducacional.com'])
             ->notify(new PaymentStatusNotification($email));
     }
 

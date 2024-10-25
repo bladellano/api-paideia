@@ -54,8 +54,7 @@ class StudentController extends Controller
 
             $student = $this->service->create($data);
 
-            Notification::route('mail', 'dellanosites@gmail.com')
-                ->notify(new StudentCreated($student));
+            #Notification::route('mail', 'dellanosites@gmail.com')->notify(new StudentCreated($student));
 
             return response()->json(['data' => $student, 'message' => 'Registro criado com sucesso!'], Response::HTTP_CREATED);
         } catch (\PDOException $e) {
